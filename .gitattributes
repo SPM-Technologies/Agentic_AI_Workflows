@@ -1,0 +1,3 @@
+# normalize line endings in the repo; shell scripts must stay LF to run in Bash
+* text=auto
+*.sh text eol=lf

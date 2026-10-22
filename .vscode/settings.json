@@ -1,0 +1,30 @@
+{
+  "java.jdt.ls.java.home": "D:\\Pravin\\jdk-21.0.12.1",
+  "java.configuration.runtimes": [
+    {
+      "name": "JavaSE-21",
+      "path": "D:\\Pravin\\jdk-21.0.12.1",
+      "default": true
+    }
+  ],
+  "terminal.integrated.profiles.windows": {
+    "PowerShell JDK21": {
+      "source": "PowerShell",
+      "args": [
+        "-NoExit",
+        "-Command",
+        "$env:JAVA_HOME='D:\\Pravin\\jdk-21.0.12.1'; $env:Path=$env:JAVA_HOME+'\\bin;'+$env:Path; function global:mvn { docker run --rm -v ($PWD.Path+':/app') -w /app -v maven-repo:/root/.m2 maven:3-eclipse-temurin-21 mvn @args }; Write-Host 'Session: JAVA_HOME = D:\\Pravin\\jdk-21.0.12.1 | mvn -> Docker'"
+      ]
+    },
+    "Git Bash JDK21": {
+      "source": "Git Bash",
+      "args": [
+        "--login",
+        "-c",
+        "source /d/Pravin/AI_Agent/AI_Framework/spring-mvc-langchain4j/env.sh && exec bash --login -i"
+      ]
+    }
+  },
+  "terminal.integrated.cwd": "${workspaceFolder}\\spring-mvc-langchain4j",
+  "terminal.integrated.defaultProfile.windows": "PowerShell JDK21"
+}

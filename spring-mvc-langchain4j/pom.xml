@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.pravin</groupId>
+    <artifactId>ai-framework</artifactId>
+    <version>1.0-SNAPSHOT</version>
+     
+    <!-- war = web application deployed to Tomcat (no Spring Boot) -->
+    <packaging>war</packaging>
+
+    <properties>
+
+        <maven.compiler.release>21</maven.compiler.release>
+        <!-- keeps method parameter names, so @RequestParam can match them -->
+        <maven.compiler.parameters>true</maven.compiler.parameters>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spring.version>7.0.9</spring.version>
+        <langchain4j.version>1.22.0</langchain4j.version>
+    </properties>
+
+    <dependencies>
+        <!-- Spring MVC (pulls in spring-core, spring-context, spring-web) -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+
+
+        <!-- Servlet API: Tomcat 11 already has it, so "provided" (not packed in the war) -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>6.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- JSTL for JSP pages (<c:out>, <c:if>) - Tomcat does not include it -->
+        <dependency>
+            <groupId>jakarta.servlet.jsp.jstl</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+            <version>3.0.2</version>
+            <exclusions>
+                <!-- Tomcat already provides the EL API -->
+                <exclusion>
+                    <groupId>jakarta.el</groupId>
+                    <artifactId>jakarta.el-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+
+        <!-- LangChain4j: AiServices (agent building blocks) + Claude connector -->
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j</artifactId>
+            <version>${langchain4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-anthropic</artifactId>
+            <version>${langchain4j.version}</version>
+        </dependency>
+        <!-- Agentic workflows: sequence, loop, parallel, conditional (routing) -->
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-agentic</artifactId>
+            <version>${langchain4j.version}-beta32</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <!-- ROOT.war = app opens at http://localhost:8080/ -->
+        <finalName>ROOT</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.16.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <!-- put the war in ./deploy, which Tomcat (Docker) watches -->
+                    <outputDirectory>${project.basedir}/deploy</outputDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

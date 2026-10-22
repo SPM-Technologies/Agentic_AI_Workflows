@@ -1,0 +1,6 @@
+# build output (any project folder)
+target/
+deploy/
+
+# never commit secrets
+.env

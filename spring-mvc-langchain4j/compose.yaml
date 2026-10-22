@@ -1,0 +1,16 @@
+# Runs Tomcat 11 (Java 21) in Docker.
+# Only ROOT.war is shared with Tomcat; Tomcat unpacks it inside the container
+# (fast - avoids writing hundreds of files onto the Windows disk).
+# After "mvn package", run "docker compose restart" to load the new war.
+name: ai_framework
+services:
+  tomcat:
+    image: tomcat:11.0-jdk21
+    container_name: ai-framework-tomcat
+    environment:
+      TZ: Asia/Kolkata
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./deploy/ROOT.war:/usr/local/tomcat/webapps/ROOT.war:ro
