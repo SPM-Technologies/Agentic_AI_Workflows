@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agentic Workflows Guide</title>
+<style>
+:root {
+  --bg: #f5f7f9; --surface: #ffffff; --surface-2: #eef3f6; --text: #1d2730; --muted: #5d6b78;
+  --border: #d3dce3; --accent: #00707e; --accent-soft: #e0f1f3;
+  --code-bg: #f0f3f6; --warn-bg: #fff6e5; --warn-border: #e8b04a; --ok-bg: #e9f6ec; --ok-border: #58a86a;
+  --svg-box: #ffffff; --svg-head: #00707e; --svg-head-text: #ffffff; --svg-line: #4d5b67; --svg-text: #1d2730;
+  --svg-muted: #6a7885; --svg-fk: #b35c00; --svg-pk: #00707e; --svg-alt: #f2f7f9; --svg-ai: #e6eefc; --svg-ai-line: #4a6fd1;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171c; --surface: #1a2128; --surface-2: #212a33; --text: #e3e9ee; --muted: #9aa8b4;
+    --border: #33404c; --accent: #3fb6c4; --accent-soft: #163339;
+    --code-bg: #212a33; --warn-bg: #2e2717; --warn-border: #b9893a; --ok-bg: #18291d; --ok-border: #4c8f5b;
+    --svg-box: #1f2830; --svg-head: #2a8f9b; --svg-head-text: #ffffff; --svg-line: #9aa8b4; --svg-text: #e3e9ee;
+    --svg-muted: #9aa8b4; --svg-fk: #f0a35a; --svg-pk: #5cc8d4; --svg-alt: #24303a; --svg-ai: #1d2740; --svg-ai-line: #8ca6f0;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171c; --surface: #1a2128; --surface-2: #212a33; --text: #e3e9ee; --muted: #9aa8b4;
+  --border: #33404c; --accent: #3fb6c4; --accent-soft: #163339;
+  --code-bg: #212a33; --warn-bg: #2e2717; --warn-border: #b9893a; --ok-bg: #18291d; --ok-border: #4c8f5b;
+  --svg-box: #1f2830; --svg-head: #2a8f9b; --svg-head-text: #ffffff; --svg-line: #9aa8b4; --svg-text: #e3e9ee;
+  --svg-muted: #9aa8b4; --svg-fk: #f0a35a; --svg-pk: #5cc8d4; --svg-alt: #24303a; --svg-ai: #1d2740; --svg-ai-line: #8ca6f0;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.6 "Segoe UI", system-ui, -apple-system, Arial, sans-serif; }
+a { color: var(--accent); }
+code, pre { font-family: Consolas, "Cascadia Mono", "Courier New", monospace; font-size: 13px; }
+code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+pre { background: var(--code-bg); padding: 12px 14px; border-radius: 6px; overflow-x: auto; border: 1px solid var(--border); line-height: 1.45; }
+pre code { background: none; padding: 0; }
+.layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); min-height: 100vh; }
+nav.toc { position: sticky; top: 0; height: 100vh; overflow-y: auto; background: var(--surface); border-right: 1px solid var(--border); padding: 20px 16px; }
+nav.toc h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 10px; }
+nav.toc ol { margin: 0; padding-left: 20px; font-size: 14px; }
+nav.toc li { margin: 4px 0; }
+nav.toc a { text-decoration: none; color: var(--text); }
+nav.toc a:hover { color: var(--accent); }
+main { padding: 28px 40px 80px; max-width: 1100px; }
+h1 { font-size: 28px; margin: 0 0 6px; }
+.sub { color: var(--muted); margin-bottom: 18px; }
+h2 { font-size: 21px; margin: 44px 0 12px; padding-bottom: 6px; border-bottom: 2px solid var(--border); }
+h2 .n { color: var(--accent); margin-right: 8px; }
+h3 { font-size: 16.5px; margin: 24px 0 8px; }
+table { width: 100%; border-collapse: collapse; margin: 10px 0; background: var(--surface); }
+th, td { text-align: left; vertical-align: top; padding: 7px 10px; border: 1px solid var(--border); font-size: 14px; }
+th { background: var(--surface-2); }
+.note { background: var(--accent-soft); border-left: 4px solid var(--accent); padding: 10px 14px; margin: 12px 0; border-radius: 0 6px 6px 0; }
+.warn { background: var(--warn-bg); border-left: 4px solid var(--warn-border); padding: 10px 14px; margin: 12px 0; border-radius: 0 6px 6px 0; }
+.ok { background: var(--ok-bg); border-left: 4px solid var(--ok-border); padding: 10px 14px; margin: 12px 0; border-radius: 0 6px 6px 0; }
+.kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 12px 0; }
+.kpis div { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px; text-align: center; }
+.kpis b { display: block; font-size: 22px; color: var(--accent); }
+.kpis span { font-size: 12.5px; color: var(--muted); }
+.diagram { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin: 12px 0; overflow-x: auto; }
+.diagram svg { display: block; width: 100%; height: auto; min-width: 760px; }
+.cap { font-size: 13px; color: var(--muted); margin-top: 4px; }
+svg text { font-family: "Segoe UI", Arial, sans-serif; fill: var(--svg-text); font-size: 12.5px; }
+svg .t-small { font-size: 11px; fill: var(--svg-muted); }
+svg .t-head { fill: var(--svg-head-text); font-weight: 600; font-size: 12.5px; }
+svg .t-b { font-weight: 600; }
+svg .t-pk { fill: var(--svg-pk); font-weight: 600; font-size: 11.5px; }
+svg .t-fk { fill: var(--svg-fk); font-size: 11.5px; }
+svg .t-f { font-size: 11.5px; }
+svg .t-lbl { font-weight: 700; fill: var(--accent); font-size: 13px; }
+svg .box { fill: var(--svg-box); stroke: var(--svg-line); stroke-width: 1.2; }
+svg .alt { fill: var(--svg-alt); stroke: var(--svg-line); stroke-width: 1.2; }
+svg .ai { fill: var(--svg-ai); stroke: var(--svg-ai-line); stroke-width: 1.4; }
+svg .human { fill: var(--ok-bg); stroke: var(--ok-border); stroke-width: 1.6; }
+svg .ext { fill: var(--warn-bg); stroke: var(--warn-border); stroke-width: 1.4; }
+svg .head { fill: var(--svg-head); }
+svg .frame { fill: none; stroke: var(--svg-muted); stroke-width: 1.2; stroke-dasharray: 6 4; }
+svg .ln { stroke: var(--svg-line); stroke-width: 1.4; fill: none; }
+svg .ln-d { stroke: var(--svg-line); stroke-width: 1.2; fill: none; stroke-dasharray: 5 3; }
+svg .arrowhead { fill: var(--svg-line); }
+@media (max-width: 900px) { .layout { grid-template-columns: 1fr; } nav.toc { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--border); } main { padding: 20px 16px 60px; } .kpis { grid-template-columns: repeat(2, 1fr); } }
+@media print { nav.toc { display: none; } .layout { display: block; } main { max-width: none; padding: 0; } h2 { break-after: avoid; } .diagram, table, pre { break-inside: avoid; } }
+</style>
+</head>
+<body>
+<div class="layout">
+<nav class="toc">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#stack">Technology stack</a></li>
+    <li><a href="#architecture">Architecture</a></li>
+    <li><a href="#structure">Project structure</a></li>
+    <li><a href="#how">How it works (flows)</a></li>
+    <li><a href="#patterns">The four workflow patterns</a></li>
+    <li><a href="#er">ER diagram (data model)</a></li>
+    <li><a href="#classes">Java classes &amp; relations</a></li>
+    <li><a href="#agents">AI agents, tools &amp; prompts</a></li>
+    <li><a href="#screens">Screens &amp; URLs</a></li>
+    <li><a href="#config">Configuration</a></li>
+    <li><a href="#deps">Dependencies</a></li>
+    <li><a href="#deploy">Build &amp; deployment</a></li>
+    <li><a href="#testing">Testing</a></li>
+    <li><a href="#security">Security &amp; known limitations</a></li>
+    <li><a href="#cost">Cost</a></li>
+    <li><a href="#trouble">Troubleshooting</a></li>
+  </ol>
+</nav>
+<main>
+
+<h1>Agentic Workflows Prototype - Project Guide</h1>
+<div class="sub">Folder <code>spring-mvc-langchain4j/</code> &middot; Spring MVC 7 (no Spring Boot) + LangChain4j + Claude &middot; Tomcat 11 in Docker</div>
+
+<!-- ===================================================================== -->
+<h2 id="overview"><span class="n">1.</span>Overview</h2>
+<p>A small learning and reference application that shows the main <b>agentic AI patterns in plain Java</b>, inside a Spring MVC application without Spring Boot -
+the same style as a typical existing product (Spring MVC + JSP + Tomcat).</p>
+<ul>
+  <li><b>Ask page</b> - a chat assistant that can call Java methods (<b>tools</b>) and remembers the conversation (<b>memory</b>).</li>
+  <li><b>Workflows page</b> - four multi-agent patterns: <b>sequence</b>, <b>loop</b> (evaluator-optimizer), <b>parallel</b> and <b>routing</b>, each showing every agent step.</li>
+</ul>
+<div class="kpis">
+  <div><b>6</b><span>patterns: tools, memory, sequence, loop, parallel, routing</span></div>
+  <div><b>11</b><span>workflow agents + 1 assistant</span></div>
+  <div><b>2</b><span>tools (date/time, order status)</span></div>
+  <div><b>3</b><span>pages + health check</span></div>
+  <div><b>2-10</b><span>Claude calls per workflow run</span></div>
+</div>
+<div class="note">The sibling project <code>appeal-assistant-demo</code> uses the same building blocks for one complete business workflow with human approval and an audit log.</div>
+
+<!-- ===================================================================== -->
+<h2 id="stack"><span class="n">2.</span>Technology stack</h2>
+<table>
+  <tr><th>Layer</th><th>Technology</th><th>Version</th><th>Licence</th><th>Why</th></tr>
+  <tr><td>Language / runtime</td><td>Java (Eclipse Temurin JDK)</td><td>21</td><td>GPLv2 + Classpath Exception</td><td>Long-term-support Java; records and text blocks.</td></tr>
+  <tr><td>Web framework</td><td>Spring MVC (plain Java config, <b>no Spring Boot</b>)</td><td>7.0.9</td><td>Apache-2.0</td><td>Matches the target product style.</td></tr>
+  <tr><td>Views</td><td>JSP + Jakarta JSTL</td><td>JSTL 3.0</td><td>EPL-2.0</td><td>Server-rendered pages; <code>&lt;c:out&gt;</code> escapes text.</td></tr>
+  <tr><td>Application server</td><td>Apache Tomcat</td><td>11.0.27</td><td>Apache-2.0</td><td>Jakarta Servlet 6.1 container.</td></tr>
+  <tr><td>AI framework</td><td>LangChain4j + anthropic + agentic modules</td><td>1.22.0 (agentic 1.22.0-beta32)</td><td>Apache-2.0</td><td>AI services as interfaces, <code>@Tool</code> methods, chat memory, workflow builders.</td></tr>
+  <tr><td>AI model</td><td>Claude Opus 5.5 (<code>claude-opus-5-5</code>)</td><td>-</td><td>Paid per use (approved)</td><td>Reasoning quality; adaptive thinking.</td></tr>
+  <tr><td>Build</td><td>Apache Maven</td><td>3.10.0</td><td>Apache-2.0</td><td>Runs inside the Docker build stage.</td></tr>
+  <tr><td>Packaging / run</td><td>Docker + Docker Compose</td><td>Docker 29</td><td>Apache-2.0</td><td>The only tool a machine needs.</td></tr>
+  <tr><td>Data</td><td>In memory (HTTP session, chat memory, a small order map)</td><td>-</td><td>-</td><td>No database needed for the patterns.</td></tr>
+</table>
+
+<!-- ===================================================================== -->
+<h2 id="architecture"><span class="n">3.</span>Architecture</h2>
+<div class="diagram">
+<svg viewBox="0 0 920 400" role="img" aria-label="Architecture diagram">
+  <defs><marker id="b1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrowhead"/></marker></defs>
+  <rect x="15" y="160" width="125" height="60" rx="8" class="human"/>
+  <text x="77" y="186" text-anchor="middle" class="t-b">User</text><text x="77" y="204" text-anchor="middle" class="t-small">web browser</text>
+  <rect x="170" y="15" width="575" height="370" rx="10" class="frame"/>
+  <text x="185" y="35" class="t-small">Docker container ai-framework-tomcat &#183; Tomcat 11 + Java 21 &#183; port 8080</text>
+  <!-- controllers -->
+  <rect x="190" y="55" width="230" height="70" rx="8" class="box"/>
+  <text x="305" y="80" text-anchor="middle" class="t-b">Controllers + JSP views</text>
+  <text x="305" y="97" text-anchor="middle" class="t-small">HomeController, AskController,</text>
+  <text x="305" y="112" text-anchor="middle" class="t-small">WorkflowController</text>
+  <!-- services -->
+  <rect x="190" y="170" width="230" height="62" rx="8" class="ai"/>
+  <text x="305" y="195" text-anchor="middle" class="t-b">AssistantService</text>
+  <text x="305" y="213" text-anchor="middle" class="t-small">Assistant + chat memory (per session)</text>
+  <rect x="490" y="170" width="230" height="62" rx="8" class="ai"/>
+  <text x="605" y="195" text-anchor="middle" class="t-b">WorkflowService</text>
+  <text x="605" y="213" text-anchor="middle" class="t-small">4 agentic workflows, 11 agents</text>
+  <!-- row 3: tools + model -->
+  <rect x="190" y="290" width="230" height="62" rx="8" class="alt"/>
+  <text x="305" y="315" text-anchor="middle" class="t-b">ShopTools</text>
+  <text x="305" y="333" text-anchor="middle" class="t-small">currentDateTime(), getOrderStatus()</text>
+  <rect x="490" y="290" width="230" height="62" rx="8" class="ai"/>
+  <text x="605" y="315" text-anchor="middle" class="t-b">ClaudeModel</text>
+  <text x="605" y="333" text-anchor="middle" class="t-small">shared by both services</text>
+  <rect x="775" y="290" width="135" height="62" rx="8" class="ext"/>
+  <text x="842" y="315" text-anchor="middle" class="t-b">Claude API</text><text x="842" y="333" text-anchor="middle" class="t-small">claude-opus-5-5</text>
+  <!-- arrows -->
+  <path d="M140,185 L188,100" class="ln" marker-end="url(#b1)"/><text x="128" y="132" class="t-small">HTTP</text>
+  <path d="M305,125 L305,168" class="ln" marker-end="url(#b1)"/><text x="312" y="150" class="t-small">/ask</text>
+  <path d="M420,90 L605,90 L605,168" class="ln" marker-end="url(#b1)"/><text x="470" y="84" class="t-small">/workflows</text>
+  <path d="M305,232 L305,288" class="ln" marker-end="url(#b1)"/><text x="312" y="262" class="t-small">tool calls</text>
+  <path d="M540,232 L540,262 L380,262 L380,288" class="ln" marker-end="url(#b1)"/><text x="388" y="256" class="t-small">OrderAgent tool calls</text>
+  <path d="M660,232 L660,288" class="ln" marker-end="url(#b1)"/>
+  <path d="M190,201 L178,201 L178,372 L605,372 L605,354" class="ln" marker-end="url(#b1)"/><text x="186" y="366" class="t-small">model calls</text>
+  <path d="M720,321 L773,321" class="ln" marker-end="url(#b1)"/><text x="728" y="313" class="t-small">HTTPS</text>
+</svg>
+<div class="cap">Blue = AI parts, amber = external service. Both services share one ClaudeModel. ShopTools is also used by the routing workflow's OrderAgent.</div>
+</div>
+
+<!-- ===================================================================== -->
+<h2 id="structure"><span class="n">4.</span>Project structure</h2>
+<pre><code>spring-mvc-langchain4j/
+├── Dockerfile                  multi-stage: Maven builds the WAR, Tomcat runs it
+├── compose.yaml                service tomcat (port 8080) + optional fake-claude (profile "fake")
+├── .dockerignore               build context = pom.xml + src only
+├── pom.xml                     dependencies (section 12); WAR name ROOT
+├── env.sh                      optional: JDK 21 + Docker-based mvn for Git Bash host builds
+├── README.md
+├── docs/Agentic-Workflows-Prototype-Guide.html   this document
+├── testing/FakeClaude.java     fake Claude server for free tests (section 14)
+└── src/main/
+    ├── java/com/pravin/ai/
+    │   ├── config/      WebAppInitializer, WebConfig, ClaudeModel
+    │   ├── controller/  HomeController (/ , /health), AskController (/ask), WorkflowController (/workflows)
+    │   ├── service/     Assistant (AI service interface), AssistantService, WorkflowService
+    │   ├── agents/      Agents - 11 agent interfaces + Category enum
+    │   └── tools/       ShopTools - 2 @Tool methods
+    └── webapp/WEB-INF/views/  home.jsp, ask.jsp, workflows.jsp</code></pre>
+
+<!-- ===================================================================== -->
+<h2 id="how"><span class="n">5.</span>How it works (flows)</h2>
+<h3>5.1 Start-up</h3>
+<p><code>WebAppInitializer</code> (instead of <code>web.xml</code>) starts Spring with <code>WebConfig</code>, sets UTF-8 and cookie-only sessions.
+Spring creates <code>ClaudeModel</code> (reads <code>ANTHROPIC_API_KEY</code>; without it the pages show a clear message), <code>ShopTools</code>,
+<code>AssistantService</code>, <code>WorkflowService</code> (builds the four workflows once) and the controllers.</p>
+
+<h3 id="askflow">5.2 Ask page: tools + memory (flowchart)</h3>
+<div class="diagram">
+<svg viewBox="0 0 920 560" role="img" aria-label="Ask flow">
+  <defs><marker id="b2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrowhead"/></marker></defs>
+  <rect x="320" y="10" width="280" height="40" rx="20" class="human"/>
+  <text x="460" y="35" text-anchor="middle" class="t-b">User types a question &#8594; POST /ask</text>
+  <path d="M460,50 L460,70" class="ln" marker-end="url(#b2)"/>
+  <rect x="300" y="72" width="320" height="46" rx="8" class="box"/>
+  <text x="460" y="92" text-anchor="middle" class="t-b">AskController</text>
+  <text x="460" y="109" text-anchor="middle" class="t-small">conversation id = browser session id</text>
+  <path d="M460,118 L460,138" class="ln" marker-end="url(#b2)"/>
+  <rect x="300" y="140" width="320" height="56" rx="8" class="ai"/>
+  <text x="460" y="161" text-anchor="middle" class="t-b">Assistant (LangChain4j AiServices)</text>
+  <text x="460" y="178" text-anchor="middle" class="t-small">system message + last 20 messages of this</text>
+  <text x="460" y="191" text-anchor="middle" class="t-small">conversation + new question + tool list</text>
+  <path d="M460,196 L460,216" class="ln" marker-end="url(#b2)"/>
+  <rect x="340" y="218" width="240" height="40" rx="8" class="ext"/>
+  <text x="460" y="243" text-anchor="middle" class="t-b">Claude</text>
+  <path d="M460,258 L460,278" class="ln" marker-end="url(#b2)"/>
+  <polygon points="460,280 560,316 460,352 360,316" class="box"/>
+  <text x="460" y="313" text-anchor="middle" class="t-b">tool needed?</text>
+  <text x="460" y="329" text-anchor="middle" class="t-small">Claude decides</text>
+  <path d="M560,316 L650,316" class="ln" marker-end="url(#b2)"/><text x="570" y="308" class="t-small">yes</text>
+  <rect x="652" y="290" width="250" height="52" rx="8" class="alt"/>
+  <text x="777" y="311" text-anchor="middle" class="t-b">ShopTools method runs</text>
+  <text x="777" y="328" text-anchor="middle" class="t-small">e.g. getOrderStatus("101")</text>
+  <path d="M777,290 L777,238 L582,238" class="ln" marker-end="url(#b2)"/>
+  <text x="600" y="231" class="t-small">result sent back to Claude (repeat as needed)</text>
+  <path d="M460,352 L460,374" class="ln" marker-end="url(#b2)"/><text x="468" y="368" class="t-small">no - final answer</text>
+  <rect x="300" y="376" width="320" height="46" rx="8" class="ai"/>
+  <text x="460" y="396" text-anchor="middle" class="t-b">Save to chat memory</text>
+  <text x="460" y="413" text-anchor="middle" class="t-small">question, tool calls, thinking, answer (window of 20)</text>
+  <path d="M460,422 L460,442" class="ln" marker-end="url(#b2)"/>
+  <rect x="300" y="444" width="320" height="46" rx="8" class="box"/>
+  <text x="460" y="464" text-anchor="middle" class="t-b">Controller adds ChatTurn to session</text>
+  <text x="460" y="481" text-anchor="middle" class="t-small">answer + "[Tools used]" lines</text>
+  <path d="M460,490 L460,510" class="ln" marker-end="url(#b2)"/>
+  <rect x="300" y="512" width="320" height="40" rx="20" class="human"/>
+  <text x="460" y="537" text-anchor="middle" class="t-b">Redirect &#8594; GET /ask shows the conversation</text>
+</svg>
+<div class="cap">"New chat" (<code>POST /ask/clear</code>) clears both the chat memory and the page history for this browser.</div>
+</div>
+
+<h3>5.3 Workflows page</h3>
+<p>The user picks a pattern and enters text. <code>WorkflowService.run()</code> invokes the matching pre-built workflow with the input as a named value
+(<code>task</code>, <code>code</code> or <code>question</code>), then reads every agent call from the shared state (LangChain4j <code>AgenticScope</code>) to show the steps.
+Errors are caught and shown as a message on the page.</p>
+
+<!-- ===================================================================== -->
+<h2 id="patterns"><span class="n">6.</span>The four workflow patterns</h2>
+<div class="diagram">
+<svg viewBox="0 0 960 560" role="img" aria-label="Workflow patterns">
+  <defs><marker id="b3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrowhead"/></marker></defs>
+  <!-- Sequence -->
+  <text x="15" y="55" class="t-lbl">Sequence</text>
+  <rect x="160" y="30" width="90" height="40" rx="20" class="box"/><text x="205" y="55" text-anchor="middle">task</text>
+  <path d="M250,50 L288,50" class="ln" marker-end="url(#b3)"/>
+  <rect x="290" y="30" width="150" height="40" rx="8" class="ai"/><text x="365" y="55" text-anchor="middle" class="t-b">CodeWriter</text>
+  <path d="M440,50 L478,50" class="ln" marker-end="url(#b3)"/>
+  <rect x="480" y="30" width="150" height="40" rx="8" class="ai"/><text x="555" y="55" text-anchor="middle" class="t-b">CodeReviewer</text>
+  <path d="M630,50 L668,50" class="ln" marker-end="url(#b3)"/>
+  <rect x="670" y="30" width="190" height="40" rx="20" class="box"/><text x="765" y="55" text-anchor="middle">code + review</text>
+  <!-- Loop -->
+  <text x="15" y="165" class="t-lbl">Loop</text>
+  <text x="15" y="182" class="t-small">evaluator-optimizer</text>
+  <rect x="160" y="145" width="90" height="40" rx="20" class="box"/><text x="205" y="170" text-anchor="middle">task</text>
+  <path d="M250,165 L288,165" class="ln" marker-end="url(#b3)"/>
+  <rect x="290" y="145" width="150" height="40" rx="8" class="ai"/><text x="365" y="170" text-anchor="middle" class="t-b">CodeWriter</text>
+  <path d="M440,165 L468,165" class="ln" marker-end="url(#b3)"/>
+  <rect x="470" y="115" width="475" height="110" rx="10" class="frame"/>
+  <text x="482" y="132" class="t-small">loop - max 3 rounds - stop as soon as score &#8805; 0.8 (checked after each agent)</text>
+  <rect x="485" y="145" width="130" height="40" rx="8" class="ai"/><text x="550" y="170" text-anchor="middle" class="t-b">CodeReviewer</text>
+  <path d="M615,165 L638,165" class="ln" marker-end="url(#b3)"/>
+  <rect x="640" y="145" width="130" height="40" rx="8" class="ai"/><text x="705" y="170" text-anchor="middle" class="t-b">CodeScorer</text>
+  <path d="M770,165 L793,165" class="ln" marker-end="url(#b3)"/>
+  <rect x="795" y="145" width="140" height="40" rx="8" class="ai"/><text x="865" y="170" text-anchor="middle" class="t-b">CodeFixer</text>
+  <path d="M865,185 L865,210 L550,210 L550,187" class="ln" marker-end="url(#b3)"/><text x="660" y="205" class="t-small">next round</text>
+  <text x="160" y="245" class="t-small">output: final code + score</text>
+  <!-- Parallel -->
+  <text x="15" y="320" class="t-lbl">Parallel</text>
+  <rect x="160" y="295" width="90" height="40" rx="20" class="box"/><text x="205" y="320" text-anchor="middle">code</text>
+  <text x="360" y="268" class="t-small">all three run at the same time</text>
+  <rect x="360" y="275" width="200" height="34" rx="8" class="ai"/><text x="460" y="297" text-anchor="middle" class="t-b">SecurityReviewer</text>
+  <rect x="360" y="318" width="200" height="34" rx="8" class="ai"/><text x="460" y="340" text-anchor="middle" class="t-b">PerformanceReviewer</text>
+  <rect x="360" y="361" width="200" height="34" rx="8" class="ai"/><text x="460" y="383" text-anchor="middle" class="t-b">ReadabilityReviewer</text>
+  <path d="M250,315 L358,292" class="ln" marker-end="url(#b3)"/><path d="M250,315 L358,335" class="ln" marker-end="url(#b3)"/><path d="M250,315 L358,378" class="ln" marker-end="url(#b3)"/>
+  <rect x="640" y="315" width="220" height="40" rx="8" class="box"/><text x="750" y="340" text-anchor="middle" class="t-b">combine into one report</text>
+  <path d="M560,292 L638,330" class="ln" marker-end="url(#b3)"/><path d="M560,335 L638,335" class="ln" marker-end="url(#b3)"/><path d="M560,378 L638,340" class="ln" marker-end="url(#b3)"/>
+  <!-- Routing -->
+  <text x="15" y="470" class="t-lbl">Routing</text>
+  <rect x="160" y="445" width="90" height="40" rx="20" class="box"/><text x="205" y="470" text-anchor="middle">question</text>
+  <path d="M250,465 L288,465" class="ln" marker-end="url(#b3)"/>
+  <rect x="290" y="445" width="150" height="40" rx="8" class="ai"/><text x="365" y="470" text-anchor="middle" class="t-b">Router</text>
+  <text x="520" y="418" class="t-small">only the matching expert runs (category CODE / ORDER / GENERAL)</text>
+  <rect x="520" y="425" width="220" height="34" rx="8" class="ai"/><text x="630" y="447" text-anchor="middle" class="t-b">CodeExpert</text>
+  <rect x="520" y="468" width="220" height="34" rx="8" class="ai"/><text x="630" y="490" text-anchor="middle" class="t-b">OrderAgent + ShopTools</text>
+  <rect x="520" y="511" width="220" height="34" rx="8" class="ai"/><text x="630" y="533" text-anchor="middle" class="t-b">GeneralAgent</text>
+  <path d="M440,465 L518,442" class="ln" marker-end="url(#b3)"/><path d="M440,465 L518,485" class="ln-d" marker-end="url(#b3)"/><path d="M440,465 L518,528" class="ln-d" marker-end="url(#b3)"/>
+  <rect x="790" y="465" width="120" height="40" rx="20" class="box"/><text x="850" y="490" text-anchor="middle">answer</text>
+  <path d="M740,442 L788,480" class="ln" marker-end="url(#b3)"/>
+</svg>
+<div class="cap">Blue = Claude-backed agents. Each agent stores its answer under an output key in the shared state, where the next agent reads it.</div>
+</div>
+<table>
+  <tr><th>Pattern</th><th>LangChain4j builder</th><th>Agents (output key)</th><th>Input</th><th>Claude calls</th></tr>
+  <tr><td>Sequence</td><td><code>sequenceBuilder</code></td><td>CodeWriter (code) &#8594; CodeReviewer (review)</td><td>task</td><td>2</td></tr>
+  <tr><td>Loop</td><td><code>sequenceBuilder</code> + <code>loopBuilder</code> (max 3, exit score &#8805; 0.8)</td><td>CodeWriter (code); loop: CodeReviewer (review) &#8594; CodeScorer (score) &#8594; CodeFixer (code)</td><td>task</td><td>3-10</td></tr>
+  <tr><td>Parallel</td><td><code>parallelBuilder</code> + output function</td><td>SecurityReviewer (security), PerformanceReviewer (performance), ReadabilityReviewer (readability)</td><td>code</td><td>3 (at once)</td></tr>
+  <tr><td>Routing</td><td><code>sequenceBuilder</code> + <code>conditionalBuilder</code></td><td>Router (category) &#8594; one of CodeExpert / OrderAgent / GeneralAgent (answer)</td><td>question</td><td>2 (+ tool round trips)</td></tr>
+</table>
+
+<!-- ===================================================================== -->
+<h2 id="er"><span class="n">7.</span>ER diagram (data model)</h2>
+<p>There is <b>no database</b>: all state is in memory and lost on restart. The diagram is the logical model of what the application keeps.</p>
+<div class="diagram">
+<svg viewBox="0 0 920 360" role="img" aria-label="ER diagram">
+  <!-- CONVERSATION -->
+  <rect x="20" y="20" width="250" height="74" rx="6" class="box"/>
+  <rect x="20" y="20" width="250" height="24" rx="6" class="head"/><rect x="20" y="36" width="250" height="8" class="head"/>
+  <text x="32" y="37" class="t-head">CONVERSATION (HTTP session)</text>
+  <text x="32" y="62" class="t-pk">PK session_id (= memory id)</text><text x="32" y="80" class="t-f">cookie only, never in URLs</text>
+  <!-- CHAT_TURN -->
+  <rect x="20" y="170" width="250" height="74" rx="6" class="box"/>
+  <rect x="20" y="170" width="250" height="24" rx="6" class="head"/><rect x="20" y="186" width="250" height="8" class="head"/>
+  <text x="32" y="187" class="t-head">CHAT_TURN (shown on the page)</text>
+  <text x="32" y="212" class="t-fk">FK session_id</text><text x="32" y="230" class="t-f">question, answer (+ tools used)</text>
+  <!-- CHAT_MEMORY_MESSAGE -->
+  <rect x="340" y="20" width="270" height="110" rx="6" class="box"/>
+  <rect x="340" y="20" width="270" height="24" rx="6" class="head"/><rect x="340" y="36" width="270" height="8" class="head"/>
+  <text x="352" y="37" class="t-head">CHAT_MEMORY_MESSAGE</text>
+  <text x="352" y="62" class="t-fk">FK session_id</text><text x="352" y="80" class="t-f">type: system / user / AI / tool result</text>
+  <text x="352" y="98" class="t-f">content (+ thinking, tool requests)</text><text x="352" y="116" class="t-small">only the last 20 per conversation kept</text>
+  <!-- ORDER -->
+  <rect x="340" y="200" width="270" height="74" rx="6" class="box"/>
+  <rect x="340" y="200" width="270" height="24" rx="6" class="head"/><rect x="340" y="216" width="270" height="8" class="head"/>
+  <text x="352" y="217" class="t-head">ORDER (pretend database in ShopTools)</text>
+  <text x="352" y="242" class="t-pk">PK order_id (101, 102, 103)</text><text x="352" y="260" class="t-f">status text</text>
+  <!-- WORKFLOW_RUN -->
+  <rect x="680" y="20" width="220" height="92" rx="6" class="box"/>
+  <rect x="680" y="20" width="220" height="24" rx="6" class="head"/><rect x="680" y="36" width="220" height="8" class="head"/>
+  <text x="692" y="37" class="t-head">WORKFLOW_RUN (per request)</text>
+  <text x="692" y="62" class="t-f">pattern</text><text x="692" y="80" class="t-f">input, output</text><text x="692" y="98" class="t-small">not stored after the page</text>
+  <!-- SCOPE_STATE -->
+  <rect x="680" y="170" width="220" height="92" rx="6" class="box"/>
+  <rect x="680" y="170" width="220" height="24" rx="6" class="head"/><rect x="680" y="186" width="220" height="8" class="head"/>
+  <text x="692" y="187" class="t-head">SCOPE_STATE (AgenticScope)</text>
+  <text x="692" y="212" class="t-pk">PK key (task, code, review, ...)</text><text x="692" y="230" class="t-f">value</text><text x="692" y="248" class="t-small">shared by the run's agents</text>
+  <!-- AGENT_STEP -->
+  <rect x="680" y="290" width="220" height="56" rx="6" class="box"/>
+  <rect x="680" y="290" width="220" height="24" rx="6" class="head"/><rect x="680" y="306" width="220" height="8" class="head"/>
+  <text x="692" y="307" class="t-head">AGENT_STEP</text><text x="692" y="332" class="t-f">agent, output (in order)</text>
+  <!-- relations -->
+  <path d="M145,94 L145,170" class="ln"/><text x="151" y="110" class="t-small">1</text><text x="151" y="164" class="t-small">*</text>
+  <path d="M270,57 L340,57" class="ln"/><text x="276" y="51" class="t-small">1</text><text x="318" y="51" class="t-small">0..20</text>
+  <path d="M790,112 L790,170" class="ln"/><text x="796" y="128" class="t-small">1</text><text x="796" y="164" class="t-small">*</text>
+  <path d="M900,90 L912,90 L912,318 L900,318" class="ln"/><text x="902" y="106" class="t-small">1</text><text x="902" y="312" class="t-small">*</text>
+</svg>
+<div class="cap">PK / FK as logical keys. CHAT_TURN is what the page shows; CHAT_MEMORY_MESSAGE is what Claude sees again on the next question.
+ORDER has no relation to the others - it is only read by the <code>getOrderStatus</code> tool.</div>
+</div>
+
+<!-- ===================================================================== -->
+<h2 id="classes"><span class="n">8.</span>Java classes &amp; relations</h2>
+<div class="diagram">
+<svg viewBox="0 0 980 440" role="img" aria-label="Class diagram">
+  <defs><marker id="b4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrowhead"/></marker></defs>
+  <!-- row 1: controllers -->
+  <rect x="20" y="20" width="280" height="76" rx="6" class="box"/>
+  <text x="32" y="42" class="t-b">HomeController</text><text x="32" y="62" class="t-small">GET / (server time), GET /health</text>
+  <rect x="340" y="20" width="280" height="76" rx="6" class="box"/>
+  <text x="352" y="42" class="t-b">AskController</text><text x="352" y="62" class="t-small">GET/POST /ask, POST /ask/clear</text><text x="352" y="78" class="t-small">record ChatTurn in the session</text>
+  <rect x="660" y="20" width="280" height="76" rx="6" class="box"/>
+  <text x="672" y="42" class="t-b">WorkflowController</text><text x="672" y="62" class="t-small">GET/POST /workflows</text>
+  <!-- row 2: services -->
+  <rect x="340" y="160" width="280" height="88" rx="6" class="ai"/>
+  <text x="352" y="182" class="t-b">AssistantService + Assistant</text><text x="352" y="202" class="t-small">AiServices, chatMemoryProvider (20 msgs)</text>
+  <text x="352" y="218" class="t-small">answer(id, q), clear(id); tools used list</text><text x="352" y="234" class="t-small">Assistant extends ChatMemoryAccess</text>
+  <rect x="660" y="160" width="280" height="88" rx="6" class="ai"/>
+  <text x="672" y="182" class="t-b">WorkflowService</text><text x="672" y="202" class="t-small">builds 4 workflows once; run(pattern, input)</text>
+  <text x="672" y="218" class="t-small">records: Step, WorkflowResult</text><text x="672" y="234" class="t-small">reads steps from AgenticScope</text>
+  <rect x="20" y="160" width="280" height="88" rx="6" class="box"/>
+  <text x="32" y="182" class="t-b">WebAppInitializer / WebConfig</text><text x="32" y="202" class="t-small">replaces web.xml &#183; DispatcherServlet</text>
+  <text x="32" y="218" class="t-small">UTF-8 filter, cookie-only sessions</text><text x="32" y="234" class="t-small">JSP view resolver, component scan</text>
+  <!-- row 3 -->
+  <rect x="340" y="320" width="280" height="88" rx="6" class="alt"/>
+  <text x="352" y="342" class="t-b">ShopTools</text><text x="352" y="362" class="t-small">@Component &#183; @Tool currentDateTime()</text>
+  <text x="352" y="378" class="t-small">@Tool getOrderStatus(orderId)</text><text x="352" y="394" class="t-small">orders 101-103 (pretend data)</text>
+  <rect x="660" y="320" width="280" height="88" rx="6" class="ai"/>
+  <text x="672" y="342" class="t-b">Agents</text><text x="672" y="362" class="t-small">11 @Agent interfaces + enum Category</text>
+  <text x="672" y="378" class="t-small">writer, reviewer, scorer, fixer, 3 reviewers,</text><text x="672" y="394" class="t-small">router, 3 experts</text>
+  <rect x="20" y="320" width="280" height="88" rx="6" class="ai"/>
+  <text x="32" y="342" class="t-b">ClaudeModel</text><text x="32" y="362" class="t-small">@Component &#183; AnthropicChatModel</text>
+  <text x="32" y="378" class="t-small">claude-opus-5-5, adaptive thinking</text><text x="32" y="394" class="t-small">drop_block, fallbacks, 5-min timeout</text>
+  <!-- relations -->
+  <path d="M480,96 L480,158" class="ln" marker-end="url(#b4)"/>
+  <path d="M800,96 L800,158" class="ln" marker-end="url(#b4)"/>
+  <path d="M480,248 L480,318" class="ln" marker-end="url(#b4)"/>
+  <path d="M800,248 L800,318" class="ln" marker-end="url(#b4)"/>
+  <path d="M720,248 L720,290 L560,290 L560,318" class="ln" marker-end="url(#b4)"/><text x="575" y="285" class="t-small">OrderAgent tools</text>
+  <path d="M400,248 L400,280 L160,280 L160,318" class="ln" marker-end="url(#b4)"/>
+  <path d="M940,204 L962,204 L962,424 L160,424 L160,410" class="ln" marker-end="url(#b4)"/>
+  <text x="170" y="275" class="t-small">model</text><text x="500" y="419" class="t-small">model (WorkflowService)</text>
+</svg>
+<div class="cap">Arrows = calls / uses. Both services get the shared <code>ClaudeModel</code>; the routing workflow's OrderAgent and the assistant both use <code>ShopTools</code>.</div>
+</div>
+
+<!-- ===================================================================== -->
+<h2 id="agents"><span class="n">9.</span>AI agents, tools &amp; prompts</h2>
+<h3>Assistant (Ask page)</h3>
+<p><code>Assistant</code> interface - system message: <i>"You are a helpful assistant for a Java developer and a small online shop. Use the available tools for order status and the current date/time. Answer clearly and briefly."</i>
+Method <code>chat(@MemoryId conversationId, @UserMessage text)</code> returns <code>Result&lt;String&gt;</code> (answer + tool executions).</p>
+<h3>Tools (ShopTools)</h3>
+<table>
+  <tr><th>Tool</th><th>Description given to Claude</th><th>Returns</th></tr>
+  <tr><td><code>currentDateTime()</code></td><td>Returns the current date and time in India (IST)</td><td>e.g. "Saturday, 24-10-2026 17:30"</td></tr>
+  <tr><td><code>getOrderStatus(orderId)</code></td><td>Returns the status of a customer order (parameter: "Order id, for example 101")</td><td>Status text, or "No order found with id ..."</td></tr>
+</table>
+<h3 id="wfagents">Workflow agents (Agents.java)</h3>
+<table>
+  <tr><th>Agent</th><th>Reads</th><th>Writes</th><th>Used in</th></tr>
+  <tr><td>CodeWriter</td><td>task</td><td>code</td><td>Sequence, Loop</td></tr>
+  <tr><td>CodeReviewer</td><td>code</td><td>review</td><td>Sequence, Loop</td></tr>
+  <tr><td>CodeScorer</td><td>review</td><td>score (0.0 - 1.0)</td><td>Loop</td></tr>
+  <tr><td>CodeFixer</td><td>task, code, review</td><td>code</td><td>Loop</td></tr>
+  <tr><td>SecurityReviewer / PerformanceReviewer / ReadabilityReviewer</td><td>code</td><td>security / performance / readability</td><td>Parallel</td></tr>
+  <tr><td>Router</td><td>question</td><td>category (CODE, ORDER, GENERAL)</td><td>Routing</td></tr>
+  <tr><td>CodeExpert / OrderAgent (with ShopTools) / GeneralAgent</td><td>question</td><td>answer</td><td>Routing</td></tr>
+</table>
+
+<!-- ===================================================================== -->
+<h2 id="screens"><span class="n">10.</span>Screens &amp; URLs</h2>
+<table>
+  <tr><th>Method &amp; URL</th><th>View</th><th>What it does</th></tr>
+  <tr><td><code>GET /</code></td><td>home.jsp</td><td>Links + server time.</td></tr>
+  <tr><td><code>GET /ask</code></td><td>ask.jsp</td><td>The conversation so far + question form + "New chat".</td></tr>
+  <tr><td><code>POST /ask</code></td><td>redirect</td><td>Parameter <code>question</code> (required, else 400). Asks the assistant; redirect avoids re-sending on refresh.</td></tr>
+  <tr><td><code>POST /ask/clear</code></td><td>redirect</td><td>Forgets this browser's conversation (memory + page history).</td></tr>
+  <tr><td><code>GET /workflows</code></td><td>workflows.jsp</td><td>Pattern choice + input.</td></tr>
+  <tr><td><code>POST /workflows</code></td><td>workflows.jsp</td><td>Parameters <code>pattern</code>, <code>input</code>; shows result and each agent step.</td></tr>
+  <tr><td><code>GET /health</code></td><td>text "OK"</td><td>Docker health check.</td></tr>
+</table>
+
+<!-- ===================================================================== -->
+<h2 id="config"><span class="n">11.</span>Configuration</h2>
+<table>
+  <tr><th>Setting</th><th>Where</th><th>Value / meaning</th></tr>
+  <tr><td><code>ANTHROPIC_API_KEY</code></td><td>terminal &#8594; compose &#8594; container</td><td>Required for real Claude; set per terminal with a hidden prompt, never in files.</td></tr>
+  <tr><td><code>ANTHROPIC_BASE_URL</code></td><td>terminal &#8594; compose</td><td>Empty = real Claude API; only for tests with the fake server.</td></tr>
+  <tr><td>Model, tokens, timeout</td><td><code>ClaudeModel</code></td><td><code>claude-opus-5-5</code>, maxTokens 16000, 5 minutes.</td></tr>
+  <tr><td>Thinking</td><td><code>ClaudeModel</code></td><td>Adaptive, <code>drop_block</code> (needed because the 20-message memory window drops old messages), blocks sent back during tool calls.</td></tr>
+  <tr><td>Refusal fallback</td><td><code>ClaudeModel</code></td><td><code>fallbacks: "default"</code> + beta header <code>server-side-fallback-2026-07-01</code>.</td></tr>
+  <tr><td>Memory window</td><td><code>AssistantService</code></td><td>20 messages per conversation.</td></tr>
+  <tr><td>Loop limits</td><td><code>WorkflowService</code></td><td>max 3 rounds, exit when score &#8805; 0.8.</td></tr>
+  <tr><td>Port, memory, time zone</td><td><code>compose.yaml</code>, <code>Dockerfile</code></td><td>8080; container 640 MB, Java heap max 384 MB; TZ Asia/Kolkata.</td></tr>
+</table>
+
+<!-- ===================================================================== -->
+<h2 id="deps"><span class="n">12.</span>Dependencies</h2>
+<pre><code>com.pravin:ai-framework:war:1.0-SNAPSHOT
++- org.springframework:spring-webmvc:7.0.9
+|  +- spring-aop, spring-beans, spring-context, spring-core, spring-expression, spring-web : 7.0.9
+|  +- io.micrometer:micrometer-observation / micrometer-commons : 1.16.7
+|  +- commons-logging:commons-logging:1.3.5
+|  \- org.jspecify:jspecify:1.0.0
++- jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.2   (EL API excluded - Tomcat has it)
++- org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1
++- dev.langchain4j:langchain4j:1.22.0
+|  +- langchain4j-core:1.22.0
+|  +- com.fasterxml.jackson.core: jackson-annotations 2.22, jackson-core 2.22.1, jackson-databind 2.22.1
+|  +- org.apache.opennlp:opennlp-tools:2.5.11
+|  +- org.slf4j:slf4j-api:2.0.18
+|  \- io.smallrye.reactive:mutiny-zero:1.3.1
++- dev.langchain4j:langchain4j-anthropic:1.22.0
+|  +- langchain4j-http-client, langchain4j-http-client-jdk : 1.22.0
+|  \- langchain4j-reactive-streaming:1.22.0-beta32
+\- dev.langchain4j:langchain4j-agentic:1.22.0-beta32
+provided: jakarta.servlet:jakarta.servlet-api:6.1.0</code></pre>
+<table>
+  <tr><th>Library group</th><th>Licence</th><th>Free for production</th></tr>
+  <tr><td>Spring Framework, Micrometer, commons-logging, Jackson, OpenNLP, LangChain4j, Mutiny Zero, JSpecify</td><td>Apache-2.0</td><td>Yes</td></tr>
+  <tr><td>Jakarta JSTL / GlassFish JSTL, Jakarta Servlet API</td><td>EPL-2.0 (+ GPL-2.0 with Classpath Exception)</td><td>Yes</td></tr>
+  <tr><td>SLF4J API</td><td>MIT</td><td>Yes</td></tr>
+  <tr><td>Build plugins: maven-compiler-plugin 3.16.0, maven-war-plugin 3.5.1</td><td>Apache-2.0</td><td>Yes</td></tr>
+</table>
+<p>No logging back-end is bundled, so SLF4J prints a harmless one-line warning at start-up.</p>
+
+<!-- ===================================================================== -->
+<h2 id="deploy"><span class="n">13.</span>Build &amp; deployment</h2>
+<div class="ok"><b>Only Docker is needed</b> - no Java, no Maven. The <code>Dockerfile</code> builds the WAR with Maven 3.10.0 / JDK 21 and runs it in Tomcat 11.0.27.</div>
+<pre><code>git clone https://github.com/SPM-Technologies/Agentic_AI_Workflows.git
+cd Agentic_AI_Workflows\spring-mvc-langchain4j
+$env:ANTHROPIC_API_KEY = [Net.NetworkCredential]::new('', (Read-Host 'API key' -AsSecureString)).Password
+docker compose up -d --build
+# open http://localhost:8080/</code></pre>
+<table>
+  <tr><th>Task</th><th>Command</th></tr>
+  <tr><td>Rebuild after a change and restart</td><td><code>docker compose up -d --build</code></td></tr>
+  <tr><td>Logs</td><td><code>docker compose logs -f</code></td></tr>
+  <tr><td>Health</td><td><code>docker ps</code> ("healthy")</td></tr>
+  <tr><td>Image really rebuilt?</td><td><code>docker image inspect ai-framework-prototype:latest --format '{{.Created}}'</code></td></tr>
+  <tr><td>Stop</td><td><code>docker compose down</code></td></tr>
+</table>
+<p><b>Optional host build:</b> <code>env.sh</code> (Git Bash) and the VS Code terminal profiles define a <code>mvn</code> command that runs Maven in Docker;
+<code>mvn package</code> then produces <code>target/ROOT.war</code>. Not needed for running the app.</p>
+
+<!-- ===================================================================== -->
+<h2 id="testing"><span class="n">14.</span>Testing</h2>
+<h3>14.1 Free tests with the fake Claude server</h3>
+<p><code>testing/FakeClaude.java</code> imitates the Claude API with believable answers: it asks for <code>getOrderStatus</code> on "order 101",
+classifies routing questions, returns score 0.5 then 0.9 in the loop, and waits 1.5 s per parallel reviewer to prove they run at the same time.</p>
+<pre><code>$env:ANTHROPIC_API_KEY = "test-key"
+$env:ANTHROPIC_BASE_URL = "http://fake-claude:18090/v1/"
+docker compose --profile fake up -d --build
+# ... test at http://localhost:8080/ ...
+docker compose --profile fake down
+Remove-Item Env:ANTHROPIC_BASE_URL   # back to the real API ...
+# ... and set the real key again (the terminal still holds "test-key"):
+$env:ANTHROPIC_API_KEY = [Net.NetworkCredential]::new('', (Read-Host 'API key' -AsSecureString)).Password</code></pre>
+<p>Every request is logged to <code>testing/requests.log</code> (git-ignored).</p>
+<h3>14.2 What has been tested</h3>
+<table>
+  <tr><th>Test</th><th>Result</th></tr>
+  <tr><td>Tool call: "Where is my order 101?" &#8594; <code>getOrderStatus</code> runs, answer uses the result</td><td>Passed (fake server)</td></tr>
+  <tr><td>Memory: third question sees all earlier messages; "New chat" resets; two browsers are separate</td><td>Passed</td></tr>
+  <tr><td>Thinking blocks sent back with signatures; one <code>drop_block</code> setting; no <code>temperature</code></td><td>Passed</td></tr>
+  <tr><td>Sequence: 2 steps; Loop: score 0.5 &#8594; fix &#8594; 0.9 &#8594; stop (6 steps)</td><td>Passed</td></tr>
+  <tr><td>Parallel: three 1.5 s reviewers finish in about 1.6 s total</td><td>Passed</td></tr>
+  <tr><td>Routing: order / Java / general questions reach the right expert; only one expert runs</td><td>Passed</td></tr>
+  <tr><td>No key: clear message; missing input: 400; Docker image builds without local Maven; health check</td><td>Passed</td></tr>
+  <tr><td><code>docker compose --profile fake up -d --build</code> end to end (routing: order question &#8594; Router &#8594; OrderAgent)</td><td>Passed - container reports "healthy"</td></tr>
+</table>
+<h3>14.3 Manual test with real Claude</h3>
+<table>
+  <tr><th>Page</th><th>Try</th><th>Expect</th></tr>
+  <tr><td>/ask</td><td>"My name is Pravin", then "Where is order 102?", then "What is my name?"</td><td>Tool line for getOrderStatus; it remembers the name</td></tr>
+  <tr><td>/ask</td><td>"What day is it today?"</td><td>Tool line for currentDateTime</td></tr>
+  <tr><td>/workflows</td><td>Loop: "Write a method that checks if a string is a palindrome"</td><td>Steps with scores; stops once the score reaches 0.8</td></tr>
+  <tr><td>/workflows</td><td>Parallel: paste a small Java snippet</td><td>Security, performance and readability sections</td></tr>
+  <tr><td>/workflows</td><td>Routing: "Status of order 103?" and "What is a Java record?"</td><td>OrderAgent (with tool) and CodeExpert respectively</td></tr>
+</table>
+
+<!-- ===================================================================== -->
+<h2 id="security"><span class="n">15.</span>Security &amp; known limitations</h2>
+<ul>
+  <li>All user and AI text is escaped with <code>&lt;c:out&gt;</code>; sessions are cookie-only.</li>
+  <li>The API key lives only in the terminal session and the container environment.</li>
+  <li>Tools are read-only and expose only pretend shop data.</li>
+</ul>
+<table>
+  <tr><th>Limitation (deliberate - learning prototype)</th><th>In a real product</th></tr>
+  <tr><td>All state in memory; lost on restart</td><td>Database-backed chat memory store</td></tr>
+  <tr><td>No login, no CSRF protection</td><td>Spring Security</td></tr>
+  <tr><td>No audit log of AI calls</td><td>Audit + cost logging (see the appeal demo for an audit trail)</td></tr>
+  <tr><td>Workflows run inside the web request (can take a minute)</td><td>Background jobs + status page (as in the appeal demo)</td></tr>
+  <tr><td>Memory window of 20 messages, no expiry for idle sessions' memory</td><td>Persistent store with retention rules</td></tr>
+</table>
+
+<!-- ===================================================================== -->
+<h2 id="cost"><span class="n">16.</span>Cost</h2>
+<p>Claude Opus 5.5: $4 / $20 per million input / output tokens (October 2026). An Ask question costs about a cent or two; a workflow run 2-10 calls,
+usually a few cents; the loop is the most expensive. The fake server costs nothing.</p>
+
+<!-- ===================================================================== -->
+<h2 id="trouble"><span class="n">17.</span>Troubleshooting</h2>
+<table>
+  <tr><th>Symptom</th><th>Cause / fix</th></tr>
+  <tr><td>"ANTHROPIC_API_KEY is not set"</td><td>Set the key in the same terminal, then <code>docker compose up -d --build</code>.</td></tr>
+  <tr><td>"Error calling Claude: ... 401" / credit errors</td><td>Wrong key / add credit in the Anthropic Console.</td></tr>
+  <tr><td>Workflow page takes long</td><td>Normal for the loop (several calls); it runs inside the request.</td></tr>
+  <tr><td>Port 8080 in use</td><td>Another app or container uses it (e.g. a local Tomcat) - stop it or change the port in <code>compose.yaml</code>.</td></tr>
+  <tr><td>"container name already in use"</td><td><code>docker rm -f ai-framework-tomcat</code>, then start again.</td></tr>
+  <tr><td>Calls go to the fake server</td><td><code>Remove-Item Env:ANTHROPIC_BASE_URL</code>, restart with compose.</td></tr>
+  <tr><td>VS Code shows "non-project file"</td><td>The Java extension has not imported the Maven project (no local Maven). The app is unaffected.</td></tr>
+</table>
+
+</main>
+</div>
+</body>
+</html>

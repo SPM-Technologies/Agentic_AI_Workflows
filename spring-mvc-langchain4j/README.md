@@ -2,20 +2,18 @@
 
 Small Spring MVC app showing agentic patterns in Java: tools, memory, sequence, loop, parallel, routing.
 
-## Daily commands (VS Code terminal, project folder, Docker Desktop running)
+## Run it - only Docker needed (no Java or Maven on the machine)
 
-| What | Command |
+| What | Command (PowerShell, in this folder, Docker Desktop running) |
 |---|---|
 | Set the API key (once per terminal, hidden, not saved) | `$env:ANTHROPIC_API_KEY = [Net.NetworkCredential]::new('', (Read-Host 'API key' -AsSecureString)).Password` |
-| Build the war (Maven runs in Docker) | `mvn package` |
-| Start Tomcat (also after setting the key) | `docker compose up -d` |
-| Load a new build into Tomcat | `docker compose restart` |
-| See Tomcat logs | `docker logs -f ai-framework-tomcat` |
-| Stop Tomcat | `docker compose down` |
+| Build inside Docker and start (also after code changes) | `docker compose up -d --build` |
+| See logs | `docker compose logs -f` |
+| Stop | `docker compose down` |
 
-Open: http://localhost:8080/
+Open: http://localhost:8080/ - full documentation: [docs/Agentic-Workflows-Prototype-Guide.html](docs/Agentic-Workflows-Prototype-Guide.html).
 
-Keep Claude Code in a separate terminal WITHOUT the key.
+Keep Claude Code in a separate terminal WITHOUT the key. Free testing with a fake Claude server: see the guide, section "Testing".
 
 ## Pages
 
@@ -29,8 +27,11 @@ Keep Claude Code in a separate terminal WITHOUT the key.
 ## Code map
 
 ```
-pom.xml                          Maven: Spring MVC 7, JSTL, LangChain4j (+ anthropic, agentic), builds deploy/ROOT.war
-compose.yaml                     Docker: Tomcat 11 + Java 21, serves deploy/ROOT.war, passes ANTHROPIC_API_KEY
+pom.xml                          Maven: Spring MVC 7, JSTL, LangChain4j (+ anthropic, agentic) -> target/ROOT.war
+Dockerfile                       multi-stage: Maven builds the WAR inside Docker, Tomcat 11 runs it
+compose.yaml                     docker compose up -d --build; passes ANTHROPIC_API_KEY; optional fake-claude profile
+testing/FakeClaude.java          fake Claude server for free tests (see docs)
+docs/                            full project guide (HTML)
 src/main/java/com/pravin/ai/
   config/WebAppInitializer.java   replaces web.xml, starts Spring's DispatcherServlet
   config/WebConfig.java           Spring MVC config, JSP view resolver

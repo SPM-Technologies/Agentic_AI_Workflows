@@ -1,0 +1,40 @@
+# Denied-claim appeal assistant demo - needs only Docker on the machine.
+#
+#   docker compose up -d --build      build the WAR inside Docker and start Tomcat on http://localhost:8090/
+#   docker compose down               stop
+#
+# Set ANTHROPIC_API_KEY in the same terminal first (see README). Port 8090, so it can run next to
+# the framework prototype (8080). Testing without spending API credit: see docs/ (section "Testing").
+name: appeal_demo
+services:
+  tomcat:
+    build: .
+    image: appeal-assistant-demo:latest
+    container_name: appeal-demo-tomcat
+    environment:
+      TZ: Asia/Kolkata
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      # empty = real Claude API; only set for local testing with the fake server
+      ANTHROPIC_BASE_URL: ${ANTHROPIC_BASE_URL:-}
+    ports:
+      - "8090:8080"
+    mem_limit: 640m
+    healthcheck:
+      # the image's sh has no /dev/tcp, so call bash directly (CMD, not CMD-SHELL)
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8080 && printf 'GET /health HTTP/1.0\\r\\n\\r\\n' >&3 && grep -q OK <&3"]
+      interval: 30s
+      timeout: 5s
+      start_period: 40s
+      retries: 3
+
+  # Optional fake Claude server for free local testing:  docker compose --profile fake up -d --build
+  # (with ANTHROPIC_API_KEY=test-key and ANTHROPIC_BASE_URL=http://fake-claude:18095/v1/ - see docs)
+  fake-claude:
+    profiles: ["fake"]
+    image: maven:3.10.0-eclipse-temurin-21
+    container_name: appeal-demo-fake-claude
+    working_dir: /testing
+    command: ["java", "FakeClaudeAppeal.java"]
+    volumes:
+      - ./testing:/testing
+    mem_limit: 256m

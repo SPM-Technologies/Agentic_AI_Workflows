@@ -1,16 +1,40 @@
-# Runs Tomcat 11 (Java 21) in Docker.
-# Only ROOT.war is shared with Tomcat; Tomcat unpacks it inside the container
-# (fast - avoids writing hundreds of files onto the Windows disk).
-# After "mvn package", run "docker compose restart" to load the new war.
+# Agentic workflows prototype - needs only Docker on the machine.
+#
+#   docker compose up -d --build      build the WAR inside Docker and start Tomcat on http://localhost:8080/
+#   docker compose down               stop
+#
+# Set ANTHROPIC_API_KEY in the same terminal first (see README).
+# Testing without spending API credit: see docs/ (section "Testing").
 name: ai_framework
 services:
   tomcat:
-    image: tomcat:11.0-jdk21
+    build: .
+    image: ai-framework-prototype:latest
     container_name: ai-framework-tomcat
     environment:
       TZ: Asia/Kolkata
-      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      # empty = real Claude API; only set for local testing with the fake server
+      ANTHROPIC_BASE_URL: ${ANTHROPIC_BASE_URL:-}
     ports:
       - "8080:8080"
+    mem_limit: 640m
+    healthcheck:
+      # the image's sh has no /dev/tcp, so call bash directly (CMD, not CMD-SHELL)
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8080 && printf 'GET /health HTTP/1.0\\r\\n\\r\\n' >&3 && grep -q OK <&3"]
+      interval: 30s
+      timeout: 5s
+      start_period: 40s
+      retries: 3
+
+  # Optional fake Claude server for free local testing:  docker compose --profile fake up -d --build
+  # (with ANTHROPIC_API_KEY=test-key and ANTHROPIC_BASE_URL=http://fake-claude:18090/v1/ - see docs)
+  fake-claude:
+    profiles: ["fake"]
+    image: maven:3.10.0-eclipse-temurin-21
+    container_name: ai-framework-fake-claude
+    working_dir: /testing
+    command: ["java", "FakeClaude.java"]
     volumes:
-      - ./deploy/ROOT.war:/usr/local/tomcat/webapps/ROOT.war:ro
+      - ./testing:/testing
+    mem_limit: 256m

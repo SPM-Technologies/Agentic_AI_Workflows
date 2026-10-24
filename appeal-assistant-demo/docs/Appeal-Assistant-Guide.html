@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Appeal Assistant Guide</title>
+<style>
+:root {
+  --bg: #f5f7f9; --surface: #ffffff; --surface-2: #eef3f6; --text: #1d2730; --muted: #5d6b78;
+  --border: #d3dce3; --accent: #00707e; --accent-soft: #e0f1f3;
+  --code-bg: #f0f3f6; --warn-bg: #fff6e5; --warn-border: #e8b04a; --ok-bg: #e9f6ec; --ok-border: #58a86a;
+  --svg-box: #ffffff; --svg-head: #00707e; --svg-head-text: #ffffff; --svg-line: #4d5b67; --svg-text: #1d2730;
+  --svg-muted: #6a7885; --svg-fk: #b35c00; --svg-pk: #00707e; --svg-alt: #f2f7f9; --svg-ai: #e6eefc; --svg-ai-line: #4a6fd1;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171c; --surface: #1a2128; --surface-2: #212a33; --text: #e3e9ee; --muted: #9aa8b4;
+    --border: #33404c; --accent: #3fb6c4; --accent-soft: #163339;
+    --code-bg: #212a33; --warn-bg: #2e2717; --warn-border: #b9893a; --ok-bg: #18291d; --ok-border: #4c8f5b;
+    --svg-box: #1f2830; --svg-head: #2a8f9b; --svg-head-text: #ffffff; --svg-line: #9aa8b4; --svg-text: #e3e9ee;
+    --svg-muted: #9aa8b4; --svg-fk: #f0a35a; --svg-pk: #5cc8d4; --svg-alt: #24303a; --svg-ai: #1d2740; --svg-ai-line: #8ca6f0;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171c; --surface: #1a2128; --surface-2: #212a33; --text: #e3e9ee; --muted: #9aa8b4;
+  --border: #33404c; --accent: #3fb6c4; --accent-soft: #163339;
+  --code-bg: #212a33; --warn-bg: #2e2717; --warn-border: #b9893a; --ok-bg: #18291d; --ok-border: #4c8f5b;
+  --svg-box: #1f2830; --svg-head: #2a8f9b; --svg-head-text: #ffffff; --svg-line: #9aa8b4; --svg-text: #e3e9ee;
+  --svg-muted: #9aa8b4; --svg-fk: #f0a35a; --svg-pk: #5cc8d4; --svg-alt: #24303a; --svg-ai: #1d2740; --svg-ai-line: #8ca6f0;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.6 "Segoe UI", system-ui, -apple-system, Arial, sans-serif; }
+a { color: var(--accent); }
+code, pre { font-family: Consolas, "Cascadia Mono", "Courier New", monospace; font-size: 13px; }
+code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+pre { background: var(--code-bg); padding: 12px 14px; border-radius: 6px; overflow-x: auto; border: 1px solid var(--border); line-height: 1.45; }
+pre code { background: none; padding: 0; }
+.layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); min-height: 100vh; }
+nav.toc { position: sticky; top: 0; height: 100vh; overflow-y: auto; background: var(--surface); border-right: 1px solid var(--border); padding: 20px 16px; }
+nav.toc h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 10px; }
+nav.toc ol { margin: 0; padding-left: 20px; font-size: 14px; }
+nav.toc li { margin: 4px 0; }
+nav.toc a { text-decoration: none; color: var(--text); }
+nav.toc a:hover { color: var(--accent); }
+main { padding: 28px 40px 80px; max-width: 1100px; }
+h1 { font-size: 28px; margin: 0 0 6px; }
+.sub { color: var(--muted); margin-bottom: 18px; }
+h2 { font-size: 21px; margin: 44px 0 12px; padding-bottom: 6px; border-bottom: 2px solid var(--border); }
+h2 .n { color: var(--accent); margin-right: 8px; }
+h3 { font-size: 16.5px; margin: 24px 0 8px; }
+table { width: 100%; border-collapse: collapse; margin: 10px 0; background: var(--surface); }
+th, td { text-align: left; vertical-align: top; padding: 7px 10px; border: 1px solid var(--border); font-size: 14px; }
+th { background: var(--surface-2); }
+.note { background: var(--accent-soft); border-left: 4px solid var(--accent); padding: 10px 14px; margin: 12px 0; border-radius: 0 6px 6px 0; }
+.warn { background: var(--warn-bg); border-left: 4px solid var(--warn-border); padding: 10px 14px; margin: 12px 0; border-radius: 0 6px 6px 0; }
+.ok { background: var(--ok-bg); border-left: 4px solid var(--ok-border); padding: 10px 14px; margin: 12px 0; border-radius: 0 6px 6px 0; }
+.kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 12px 0; }
+.kpis div { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px; text-align: center; }
+.kpis b { display: block; font-size: 22px; color: var(--accent); }
+.kpis span { font-size: 12.5px; color: var(--muted); }
+.diagram { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin: 12px 0; overflow-x: auto; }
+.diagram svg { display: block; width: 100%; height: auto; min-width: 760px; }
+.cap { font-size: 13px; color: var(--muted); margin-top: 4px; }
+/* SVG styling (follows light / dark theme) */
+svg text { font-family: "Segoe UI", Arial, sans-serif; fill: var(--svg-text); font-size: 12.5px; }
+svg .t-small { font-size: 11px; fill: var(--svg-muted); }
+svg .t-head { fill: var(--svg-head-text); font-weight: 600; font-size: 12.5px; }
+svg .t-b { font-weight: 600; }
+svg .t-pk { fill: var(--svg-pk); font-weight: 600; font-size: 11.5px; }
+svg .t-fk { fill: var(--svg-fk); font-size: 11.5px; }
+svg .t-f { font-size: 11.5px; }
+svg .box { fill: var(--svg-box); stroke: var(--svg-line); stroke-width: 1.2; }
+svg .alt { fill: var(--svg-alt); stroke: var(--svg-line); stroke-width: 1.2; }
+svg .ai { fill: var(--svg-ai); stroke: var(--svg-ai-line); stroke-width: 1.4; }
+svg .human { fill: var(--ok-bg); stroke: var(--ok-border); stroke-width: 1.6; }
+svg .ext { fill: var(--warn-bg); stroke: var(--warn-border); stroke-width: 1.4; }
+svg .head { fill: var(--svg-head); }
+svg .frame { fill: none; stroke: var(--svg-muted); stroke-width: 1.2; stroke-dasharray: 6 4; }
+svg .ln { stroke: var(--svg-line); stroke-width: 1.4; fill: none; }
+svg .ln-d { stroke: var(--svg-line); stroke-width: 1.2; fill: none; stroke-dasharray: 5 3; }
+svg .arrowhead { fill: var(--svg-line); }
+@media (max-width: 900px) { .layout { grid-template-columns: 1fr; } nav.toc { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--border); } main { padding: 20px 16px 60px; } .kpis { grid-template-columns: repeat(2, 1fr); } }
+@media print { nav.toc { display: none; } .layout { display: block; } main { max-width: none; padding: 0; } h2 { break-after: avoid; } .diagram, table, pre { break-inside: avoid; } }
+</style>
+</head>
+<body>
+<div class="layout">
+<nav class="toc">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#stack">Technology stack</a></li>
+    <li><a href="#architecture">Architecture</a></li>
+    <li><a href="#structure">Project structure</a></li>
+    <li><a href="#how">How it works (flows)</a></li>
+    <li><a href="#er">ER diagram (data model)</a></li>
+    <li><a href="#tables">Data entities</a></li>
+    <li><a href="#classes">Java classes &amp; relations</a></li>
+    <li><a href="#agents">AI agents &amp; prompts</a></li>
+    <li><a href="#screens">Screens &amp; URLs</a></li>
+    <li><a href="#status">Statuses &amp; audit log</a></li>
+    <li><a href="#config">Configuration</a></li>
+    <li><a href="#deps">Dependencies</a></li>
+    <li><a href="#deploy">Build &amp; deployment</a></li>
+    <li><a href="#testing">Testing</a></li>
+    <li><a href="#security">Security, guardrails &amp; limitations</a></li>
+    <li><a href="#cost">Cost</a></li>
+    <li><a href="#trouble">Troubleshooting</a></li>
+  </ol>
+</nav>
+<main>
+
+<h1>Denied-Claim Appeal Assistant - Project Guide</h1>
+<div class="sub">Folder <code>appeal-assistant-demo/</code> &middot; Spring MVC 7 (no Spring Boot) + LangChain4j + Claude &middot; Tomcat 11 in Docker &middot; all data synthetic</div>
+
+<!-- ===================================================================== -->
+<h2 id="overview"><span class="n">1.</span>Overview</h2>
+<p><b>In simple words:</b> after a visit, a medical practice bills the patient's insurer (a <b>claim</b>). Sometimes the insurer refuses to pay
+(a <b>denial</b>) and gives a reason code. The practice can ask the insurer to reconsider (an <b>appeal</b>) by sending a letter plus proof from the chart.
+This demo lets AI prepare that letter and proof; a <b>biller reviews, edits and approves</b> it. Nothing is sent without that approval.</p>
+<p>It is a working demonstration of one complete <b>AI workflow with human approval</b>, built the way it would be built inside an existing Spring MVC product:
+routing, tools, a check-and-fix loop, background processing, an approval screen and an audit trail.</p>
+<div class="kpis">
+  <div><b>4</b><span>synthetic denied claims</span></div>
+  <div><b>6</b><span>AI agents, one job each</span></div>
+  <div><b>4</b><span>read-only tools</span></div>
+  <div><b>2</b><span>screens</span></div>
+  <div><b>4-11</b><span>Claude calls per claim</span></div>
+</div>
+<div class="warn"><b>Synthetic data only.</b> Patients are invented; "Sunrise Health Plan" and "Lakeside Mutual" are fictional insurers. Sending to the insurer is simulated.</div>
+
+<!-- ===================================================================== -->
+<h2 id="stack"><span class="n">2.</span>Technology stack</h2>
+<table>
+  <tr><th>Layer</th><th>Technology</th><th>Version</th><th>Licence</th><th>Why</th></tr>
+  <tr><td>Language / runtime</td><td>Java (Eclipse Temurin JDK)</td><td>21</td><td>GPLv2 + Classpath Exception</td><td>Current long-term-support Java; records and text blocks keep the code short.</td></tr>
+  <tr><td>Web framework</td><td>Spring MVC (plain Java config, <b>no Spring Boot</b>)</td><td>7.0.9</td><td>Apache-2.0</td><td>Same style as the target product (Spring MVC + JSP + Tomcat).</td></tr>
+  <tr><td>Views</td><td>JSP + Jakarta JSTL</td><td>JSTL 3.0</td><td>EPL-2.0</td><td>Server-rendered pages; <code>&lt;c:out&gt;</code> escapes all text.</td></tr>
+  <tr><td>Application server</td><td>Apache Tomcat</td><td>11.0.27</td><td>Apache-2.0</td><td>Jakarta Servlet 6.1 container.</td></tr>
+  <tr><td>AI framework</td><td>LangChain4j + langchain4j-anthropic + langchain4j-agentic</td><td>1.22.0 (agentic 1.22.0-beta32)</td><td>Apache-2.0</td><td>Agents as Java interfaces, tools as annotated methods, ready-made sequence / loop / conditional workflows.</td></tr>
+  <tr><td>AI model</td><td>Claude Opus 5.5 (<code>claude-opus-5-5</code>) via the Claude API</td><td>-</td><td>Paid per use (the one approved paid item)</td><td>Strong reasoning for evidence-based letters; adaptive thinking.</td></tr>
+  <tr><td>Build</td><td>Apache Maven</td><td>3.10.0</td><td>Apache-2.0</td><td>Runs <b>inside Docker</b> (build stage) - nothing to install locally.</td></tr>
+  <tr><td>Packaging / run</td><td>Docker + Docker Compose (multi-stage Dockerfile)</td><td>Docker 29</td><td>Apache-2.0</td><td>One command builds and runs; the only tool a machine needs.</td></tr>
+  <tr><td>Data</td><td>In-memory Java records (<code>DemoData</code>)</td><td>-</td><td>-</td><td>Keeps the demo self-contained; section 7 shows how it maps to SQL Server tables.</td></tr>
+</table>
+
+<!-- ===================================================================== -->
+<h2 id="architecture"><span class="n">3.</span>Architecture</h2>
+<p>Everything runs in <b>one Docker container</b>. The only external call is to the Claude API. AI work runs on background threads so web requests return at once.</p>
+<div class="diagram">
+<svg viewBox="0 0 920 380" role="img" aria-label="Architecture diagram">
+  <defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrowhead"/></marker></defs>
+  <!-- browser -->
+  <rect x="15" y="150" width="125" height="60" rx="8" class="human"/>
+  <text x="77" y="176" text-anchor="middle" class="t-b">Biller</text>
+  <text x="77" y="194" text-anchor="middle" class="t-small">web browser</text>
+  <!-- container frame -->
+  <rect x="170" y="15" width="575" height="350" rx="10" class="frame"/>
+  <text x="185" y="35" class="t-small">Docker container appeal-demo-tomcat &#183; Tomcat 11 + Java 21 &#183; port 8090</text>
+  <!-- controller -->
+  <rect x="190" y="55" width="230" height="62" rx="8" class="box"/>
+  <text x="305" y="80" text-anchor="middle" class="t-b">AppealController</text>
+  <text x="305" y="98" text-anchor="middle" class="t-small">Spring MVC + JSP views</text>
+  <!-- service -->
+  <rect x="190" y="160" width="230" height="70" rx="8" class="box"/>
+  <text x="305" y="185" text-anchor="middle" class="t-b">AppealService</text>
+  <text x="305" y="202" text-anchor="middle" class="t-small">work queue &#183; background threads</text>
+  <text x="305" y="217" text-anchor="middle" class="t-small">approve / reject &#183; audit log</text>
+  <!-- data -->
+  <rect x="190" y="280" width="230" height="62" rx="8" class="alt"/>
+  <text x="305" y="305" text-anchor="middle" class="t-b">DemoData</text>
+  <text x="305" y="323" text-anchor="middle" class="t-small">synthetic claims, chart, policies</text>
+  <!-- workflow -->
+  <rect x="490" y="160" width="230" height="70" rx="8" class="ai"/>
+  <text x="605" y="185" text-anchor="middle" class="t-b">AppealWorkflow</text>
+  <text x="605" y="202" text-anchor="middle" class="t-small">LangChain4j agentic: 6 agents</text>
+  <text x="605" y="217" text-anchor="middle" class="t-small">route &#183; collect &#183; write &#183; check/fix</text>
+  <!-- claude model -->
+  <rect x="490" y="55" width="230" height="62" rx="8" class="ai"/>
+  <text x="605" y="80" text-anchor="middle" class="t-b">ClaudeModel</text>
+  <text x="605" y="98" text-anchor="middle" class="t-small">model, thinking, fallbacks, timeout</text>
+  <!-- tools -->
+  <rect x="490" y="280" width="230" height="62" rx="8" class="ai"/>
+  <text x="605" y="305" text-anchor="middle" class="t-b">ClaimTools</text>
+  <text x="605" y="323" text-anchor="middle" class="t-small">read-only, bound to ONE claim</text>
+  <!-- external -->
+  <rect x="775" y="55" width="135" height="62" rx="8" class="ext"/>
+  <text x="842" y="80" text-anchor="middle" class="t-b">Claude API</text>
+  <text x="842" y="98" text-anchor="middle" class="t-small">claude-opus-5-5</text>
+  <!-- arrows -->
+  <path d="M140,180 L188,95" class="ln" marker-end="url(#a1)"/>
+  <text x="128" y="128" class="t-small">HTTP</text>
+  <path d="M305,117 L305,158" class="ln" marker-end="url(#a1)"/>
+  <path d="M420,195 L488,195" class="ln" marker-end="url(#a1)"/>
+  <text x="430" y="188" class="t-small">run()</text>
+  <path d="M305,230 L305,278" class="ln" marker-end="url(#a1)"/>
+  <path d="M605,160 L605,119" class="ln" marker-end="url(#a1)"/>
+  <path d="M720,86 L773,86" class="ln" marker-end="url(#a1)"/>
+  <text x="750" y="78" class="t-small">HTTPS</text>
+  <path d="M605,230 L605,278" class="ln" marker-end="url(#a1)"/>
+  <text x="612" y="258" class="t-small">tool calls</text>
+  <path d="M490,311 L422,311" class="ln" marker-end="url(#a1)"/>
+</svg>
+<div class="cap">Blue = AI parts, green = human, amber = external service. Dashed frame = the single Docker container.</div>
+</div>
+
+<!-- ===================================================================== -->
+<h2 id="structure"><span class="n">4.</span>Project structure</h2>
+<pre><code>appeal-assistant-demo/
+├── Dockerfile                  multi-stage: Maven builds the WAR, Tomcat runs it
+├── compose.yaml                one service (tomcat) + optional fake-claude (profile "fake")
+├── .dockerignore               build context = pom.xml + src only
+├── pom.xml                     dependencies (section 13); WAR name ROOT
+├── README.md                   short run guide
+├── docs/Appeal-Assistant-Guide.html   this document
+├── testing/FakeClaudeAppeal.java      fake Claude server for free tests (section 15)
+└── src/main/
+    ├── java/com/pravin/appeal/
+    │   ├── config/   WebAppInitializer (replaces web.xml), WebConfig (MVC + JSP), ClaudeModel
+    │   ├── data/     DemoData - synthetic patients, claims, chart, authorizations, policies
+    │   ├── tools/    ClaimTools - 4 read-only @Tool methods + sourceRecords()
+    │   ├── agents/   AppealAgents - 6 agent interfaces + DenialCategory
+    │   ├── service/  AppealWorkflow (AI flow), AppealService (work queue), Appeal (item + status + audit)
+    │   └── controller/ AppealController - all URLs
+    └── webapp/WEB-INF/views/  worklist.jsp, appeal.jsp</code></pre>
+
+<!-- ===================================================================== -->
+<h2 id="how"><span class="n">5.</span>How it works (flows)</h2>
+
+<h3>5.1 Start-up</h3>
+<p>Tomcat finds <code>WebAppInitializer</code> (no <code>web.xml</code>), which starts Spring with <code>WebConfig</code>. Spring creates
+<code>ClaudeModel</code> (reads <code>ANTHROPIC_API_KEY</code>; without it the app still starts and shows a clear message), <code>DemoData</code>,
+<code>AppealWorkflow</code>, <code>AppealService</code> (with a pool of 4 background threads) and <code>AppealController</code>.</p>
+
+<h3>5.2 Preparing an appeal (request flow)</h3>
+<ol>
+  <li>The biller clicks <b>Prepare with AI</b> &rarr; <code>POST /claims/{id}/prepare</code>.</li>
+  <li><code>AppealService.prepare()</code> (synchronized - a double-click cannot start two paid runs) creates an <code>Appeal</code> with status <b>PREPARING</b>,
+      copies any earlier audit history, logs the request and hands the work to a background thread.</li>
+  <li>The browser is redirected to <code>/appeals/{id}</code>, which refreshes every 3 seconds while PREPARING. Tool reads appear live in the audit log.</li>
+  <li>The background thread runs <code>AppealWorkflow.run()</code> (section 5.3), then stores the result and sets the review status.</li>
+</ol>
+
+<h3 id="flow">5.3 The AI workflow (flowchart)</h3>
+<div class="diagram">
+<svg viewBox="0 0 920 610" role="img" aria-label="Workflow flowchart">
+  <defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrowhead"/></marker></defs>
+  <!-- start -->
+  <rect x="330" y="10" width="260" height="40" rx="20" class="human"/>
+  <text x="460" y="35" text-anchor="middle" class="t-b">Biller clicks "Prepare with AI"</text>
+  <path d="M460,50 L460,72" class="ln" marker-end="url(#a2)"/>
+  <!-- classify -->
+  <rect x="330" y="74" width="260" height="46" rx="8" class="ai"/>
+  <text x="460" y="94" text-anchor="middle" class="t-b">1. DenialClassifier</text>
+  <text x="460" y="111" text-anchor="middle" class="t-small">denial code + remark &#8594; category</text>
+  <path d="M460,120 L460,142" class="ln" marker-end="url(#a2)"/>
+  <!-- decision -->
+  <polygon points="460,144 560,184 460,224 360,184" class="box"/>
+  <text x="460" y="181" text-anchor="middle" class="t-b">CODING_ERROR?</text>
+  <text x="460" y="197" text-anchor="middle" class="t-small">(routing)</text>
+  <!-- no branch (left) -->
+  <path d="M360,184 L210,184 L210,236" class="ln" marker-end="url(#a2)"/>
+  <text x="218" y="164" class="t-small">no: medical necessity,</text>
+  <text x="218" y="177" class="t-small">authorization, other</text>
+  <rect x="80" y="238" width="260" height="46" rx="8" class="ai"/>
+  <text x="210" y="258" text-anchor="middle" class="t-b">2a. EvidenceCollector + tools</text>
+  <text x="210" y="275" text-anchor="middle" class="t-small">reads claim, chart, policy, authorizations</text>
+  <path d="M210,284 L210,306" class="ln" marker-end="url(#a2)"/>
+  <rect x="80" y="308" width="260" height="46" rx="8" class="ai"/>
+  <text x="210" y="328" text-anchor="middle" class="t-b">3a. AppealWriter</text>
+  <text x="210" y="345" text-anchor="middle" class="t-small">letter, or "NOT RECOMMENDED:" advice</text>
+  <path d="M210,354 L210,385 L388,385" class="ln" marker-end="url(#a2)"/>
+  <!-- yes branch (right) -->
+  <path d="M560,184 L710,184 L710,236" class="ln" marker-end="url(#a2)"/>
+  <text x="575" y="176" class="t-small">yes</text>
+  <rect x="580" y="238" width="260" height="46" rx="8" class="ai"/>
+  <text x="710" y="258" text-anchor="middle" class="t-b">2b. CorrectedClaimAdvisor + tools</text>
+  <text x="710" y="275" text-anchor="middle" class="t-small">"CORRECTED CLAIM:" suggestion</text>
+  <path d="M710,284 L710,340 L490,340 L490,363" class="ln" marker-end="url(#a2)"/>
+  <!-- checker -->
+  <rect x="390" y="365" width="140" height="46" rx="8" class="ai"/>
+  <text x="460" y="385" text-anchor="middle" class="t-b">4. AppealChecker</text>
+  <text x="460" y="402" text-anchor="middle" class="t-small">draft vs SOURCE records</text>
+  <path d="M460,411 L460,431" class="ln" marker-end="url(#a2)"/>
+  <polygon points="460,433 545,468 460,503 375,468" class="box"/>
+  <text x="460" y="465" text-anchor="middle" class="t-b">issues = NONE?</text>
+  <text x="460" y="481" text-anchor="middle" class="t-small">max 3 rounds</text>
+  <!-- revise loop -->
+  <path d="M545,468 L640,468" class="ln" marker-end="url(#a2)"/>
+  <text x="556" y="460" class="t-small">no</text>
+  <rect x="642" y="445" width="190" height="46" rx="8" class="ai"/>
+  <text x="737" y="465" text-anchor="middle" class="t-b">5. AppealReviser</text>
+  <text x="737" y="482" text-anchor="middle" class="t-small">fixes listed statements</text>
+  <path d="M737,445 L737,388 L532,388" class="ln" marker-end="url(#a2)"/>
+  <text x="600" y="381" class="t-small">check again</text>
+  <!-- yes -->
+  <path d="M460,503 L460,523" class="ln" marker-end="url(#a2)"/>
+  <text x="468" y="517" class="t-small">yes - or rounds used up (then one final check;</text>
+  <text x="468" y="531" class="t-small" dx="0">remaining doubts shown as a warning)</text>
+  <rect x="300" y="540" width="320" height="56" rx="10" class="human"/>
+  <text x="460" y="562" text-anchor="middle" class="t-b">Biller reviews: edit, Approve or Reject</text>
+  <text x="460" y="580" text-anchor="middle" class="t-small">nothing is sent without this step &#183; every step audited</text>
+</svg>
+<div class="cap">One path runs per claim. The checker always compares with the <b>source records read by code</b>, never with an AI-written summary.</div>
+</div>
+
+<h3>5.4 Why the checker uses source records</h3>
+<p>If the checker compared the letter with the AI's own evidence summary, a fact the AI invented could "check itself" and pass.
+So <code>ClaimTools.sourceRecords()</code> - plain Java, no AI - builds the claim, chart, policy and authorization text, and every check
+(appeal letter, "not recommended" note and corrected-claim suggestion) is made against that.</p>
+
+<h3>5.5 Human review and the end of the flow</h3>
+<p>The review screen shows the claim and the collected proof on the left, the editable draft on the right, any remaining checker doubts as a warning,
+and the audit log. <b>Approve</b> stores the (possibly edited) text and marks the appeal "sent (simulated)"; <b>Reject</b> needs a reason and allows
+"Prepare again", which keeps the full audit history.</p>
+
+<h3>5.6 Errors</h3>
+<p>Any exception in the background run sets status <b>FAILED</b> with a readable message (never "null"); a <code>finally</code> block guarantees nothing
+stays in PREPARING. Approving something not under review answers <b>409</b>, empty text or reason <b>400</b>, an unknown claim <b>404</b>.</p>
+
+<!-- ===================================================================== -->
+<h2 id="er"><span class="n">6.</span>ER diagram (data model)</h2>
+<p>The demo keeps its data <b>in memory</b> (Java records and maps) - there is no database. The diagram is the <b>logical model</b>, i.e. the tables
+this would become in SQL Server in a real product (section 7 lists the fields).</p>
+<div class="diagram">
+<svg viewBox="0 0 920 470" role="img" aria-label="ER diagram">
+  <!-- PATIENT -->
+  <rect x="20" y="20" width="230" height="92" rx="6" class="box"/>
+  <rect x="20" y="20" width="230" height="24" rx="6" class="head"/><rect x="20" y="36" width="230" height="8" class="head"/>
+  <text x="32" y="37" class="t-head">PATIENT</text>
+  <text x="32" y="62" class="t-pk">PK id</text><text x="32" y="80" class="t-f">name</text><text x="32" y="98" class="t-f">date_of_birth</text>
+  <!-- CHART_ENTRY -->
+  <rect x="20" y="190" width="230" height="128" rx="6" class="box"/>
+  <rect x="20" y="190" width="230" height="24" rx="6" class="head"/><rect x="20" y="206" width="230" height="8" class="head"/>
+  <text x="32" y="207" class="t-head">CHART_ENTRY</text>
+  <text x="32" y="232" class="t-fk">FK patient_id</text><text x="32" y="250" class="t-f">entry_date</text><text x="32" y="268" class="t-f">type (visit, imaging, PT, test)</text>
+  <text x="32" y="286" class="t-f">text</text><text x="32" y="304" class="t-f">source (e.g. "Visit note, Dr. Patel")</text>
+  <!-- AUTHORIZATION -->
+  <rect x="20" y="345" width="230" height="110" rx="6" class="box"/>
+  <rect x="20" y="345" width="230" height="24" rx="6" class="head"/><rect x="20" y="361" width="230" height="8" class="head"/>
+  <text x="32" y="362" class="t-head">AUTHORIZATION</text>
+  <text x="32" y="387" class="t-fk">FK patient_id</text><text x="32" y="405" class="t-f">service</text><text x="32" y="423" class="t-f">status</text><text x="32" y="441" class="t-f">details</text>
+  <!-- DENIED_CLAIM -->
+  <rect x="330" y="20" width="250" height="236" rx="6" class="box"/>
+  <rect x="330" y="20" width="250" height="24" rx="6" class="head"/><rect x="330" y="36" width="250" height="8" class="head"/>
+  <text x="342" y="37" class="t-head">DENIED_CLAIM</text>
+  <text x="342" y="62" class="t-pk">PK id (e.g. C-1001)</text><text x="342" y="80" class="t-fk">FK patient_id</text>
+  <text x="342" y="98" class="t-fk">FK insurer + service_code &#8594; policy</text>
+  <text x="342" y="116" class="t-f">service, service_codes</text><text x="342" y="134" class="t-f">service_date</text>
+  <text x="342" y="152" class="t-f">amount</text><text x="342" y="170" class="t-f">denial_code (CO-50, CO-197, CO-4)</text>
+  <text x="342" y="188" class="t-f">denial_remark</text><text x="342" y="206" class="t-f">denied_on</text>
+  <text x="342" y="224" class="t-f">appeal_window_days</text><text x="342" y="242" class="t-small">derived: appeal_deadline, days_left</text>
+  <!-- INSURER_POLICY -->
+  <rect x="330" y="330" width="250" height="92" rx="6" class="box"/>
+  <rect x="330" y="330" width="250" height="24" rx="6" class="head"/><rect x="330" y="346" width="250" height="8" class="head"/>
+  <text x="342" y="347" class="t-head">INSURER_POLICY</text>
+  <text x="342" y="372" class="t-pk">PK insurer</text><text x="342" y="390" class="t-pk">PK service_code</text><text x="342" y="408" class="t-f">criteria (coverage rules text)</text>
+  <!-- APPEAL -->
+  <rect x="660" y="20" width="240" height="182" rx="6" class="box"/>
+  <rect x="660" y="20" width="240" height="24" rx="6" class="head"/><rect x="660" y="36" width="240" height="8" class="head"/>
+  <text x="672" y="37" class="t-head">APPEAL</text>
+  <text x="672" y="62" class="t-pk">PK/FK claim_id</text><text x="672" y="80" class="t-f">status (7 values, section 11)</text>
+  <text x="672" y="98" class="t-f">category (routing result)</text><text x="672" y="116" class="t-f">evidence (AI summary)</text>
+  <text x="672" y="134" class="t-f">draft (AI)</text><text x="672" y="152" class="t-f">final_text (approved)</text>
+  <text x="672" y="170" class="t-f">open_issues (checker doubts)</text><text x="672" y="188" class="t-f">error</text>
+  <!-- AUDIT_EVENT -->
+  <rect x="660" y="250" width="240" height="92" rx="6" class="box"/>
+  <rect x="660" y="250" width="240" height="24" rx="6" class="head"/><rect x="660" y="266" width="240" height="8" class="head"/>
+  <text x="672" y="267" class="t-head">AUDIT_EVENT</text>
+  <text x="672" y="292" class="t-fk">FK claim_id</text><text x="672" y="310" class="t-f">time, actor</text><text x="672" y="328" class="t-f">action</text>
+  <!-- AGENT_STEP -->
+  <rect x="660" y="372" width="240" height="74" rx="6" class="box"/>
+  <rect x="660" y="372" width="240" height="24" rx="6" class="head"/><rect x="660" y="388" width="240" height="8" class="head"/>
+  <text x="672" y="389" class="t-head">AGENT_STEP</text>
+  <text x="672" y="414" class="t-fk">FK claim_id</text><text x="672" y="432" class="t-f">agent, output (in order)</text>
+  <!-- relations -->
+  <path d="M250,66 L330,66" class="ln"/><text x="256" y="60" class="t-small">1</text><text x="316" y="60" class="t-small">*</text>
+  <path d="M135,112 L135,190" class="ln"/><text x="141" y="128" class="t-small">1</text><text x="141" y="184" class="t-small">*</text>
+  <path d="M20,90 L8,90 L8,400 L20,400" class="ln"/><text x="10" y="106" class="t-small">1</text><text x="10" y="394" class="t-small">*</text>
+  <path d="M455,256 L455,330" class="ln"/><text x="461" y="272" class="t-small">*</text><text x="461" y="324" class="t-small">1</text>
+  <path d="M580,66 L660,66" class="ln"/><text x="586" y="60" class="t-small">1</text><text x="636" y="60" class="t-small">0..1</text>
+  <path d="M780,202 L780,250" class="ln"/><text x="786" y="218" class="t-small">1</text><text x="786" y="244" class="t-small">*</text>
+  <path d="M900,180 L912,180 L912,410 L900,410" class="ln"/><text x="902" y="196" class="t-small">1</text><text x="902" y="404" class="t-small">*</text>
+</svg>
+<div class="cap">PK = primary key, FK = foreign key. 1 / * = one-to-many; 0..1 = a claim has at most one current appeal. AUDIT_EVENT is append-only.</div>
+</div>
+
+<!-- ===================================================================== -->
+<h2 id="tables"><span class="n">7.</span>Data entities</h2>
+<table>
+  <tr><th>Entity</th><th>Java type today</th><th>Fields</th><th>Notes</th></tr>
+  <tr><td>PATIENT</td><td><code>DemoData.Patient</code> (record)</td><td>id, name, dateOfBirth</td><td>4 invented patients (P-01 .. P-04).</td></tr>
+  <tr><td>DENIED_CLAIM</td><td><code>DemoData.DeniedClaim</code> (record)</td><td>id, patientId, insurer, service, serviceCodes, serviceDate, amount, denialCode, denialRemark, deniedOn, appealWindowDays</td><td>Methods <code>appealDeadline()</code>, <code>daysLeft()</code>.</td></tr>
+  <tr><td>CHART_ENTRY</td><td><code>DemoData.ChartEntry</code> (record)</td><td>patientId, date, type, text, source</td><td>13 entries; the "proof".</td></tr>
+  <tr><td>AUTHORIZATION</td><td><code>DemoData.Authorization</code> (record)</td><td>patientId, service, status, details</td><td>Explains C-1002 (12 visits approved, visit 13 not).</td></tr>
+  <tr><td>INSURER_POLICY</td><td><code>Map&lt;String,String&gt;</code> keyed <code>insurer|code</code></td><td>insurer, serviceCode, criteria</td><td>4 coverage rules.</td></tr>
+  <tr><td>APPEAL</td><td><code>service.Appeal</code> (class)</td><td>claimId, status, category, evidence, draft, finalText, openIssues, error, steps, audit</td><td>Kept in a <code>ConcurrentHashMap</code>; lost on restart.</td></tr>
+  <tr><td>AUDIT_EVENT</td><td><code>Appeal.AuditEvent</code> (record)</td><td>time, actor, action</td><td>Never wiped; copied forward on "Prepare again".</td></tr>
+  <tr><td>AGENT_STEP</td><td><code>AppealWorkflow.Step</code> (record)</td><td>agent, output</td><td>From the LangChain4j <code>AgenticScope</code>.</td></tr>
+</table>
+<p><b>Demo claims:</b></p>
+<table>
+  <tr><th>Claim</th><th>Patient</th><th>Insurer</th><th>Service (codes)</th><th>Amount</th><th>Denial</th><th>Designed path</th></tr>
+  <tr><td>C-1001</td><td>Maria Lopez</td><td>Sunrise Health Plan</td><td>MRI lumbar spine (72148)</td><td>$1,240</td><td>CO-50 not medically necessary</td><td>Appeal letter - strong evidence</td></tr>
+  <tr><td>C-1002</td><td>James Carter</td><td>Lakeside Mutual</td><td>Physical therapy visit 13 (97110)</td><td>$145</td><td>CO-197 authorization absent</td><td>"Not recommended" - request new authorization</td></tr>
+  <tr><td>C-1003</td><td>Aisha Khan</td><td>Sunrise Health Plan</td><td>Office visit + knee injection (99213, 20610)</td><td>$310</td><td>CO-4 modifier missing</td><td>Corrected claim - add modifier 25</td></tr>
+  <tr><td>C-1004</td><td>Robert Chen</td><td>Lakeside Mutual</td><td>Echocardiogram (93306)</td><td>$890</td><td>CO-50 not medically necessary</td><td>Appeal letter - strong evidence</td></tr>
+</table>
+
+<!-- ===================================================================== -->
+<h2 id="classes"><span class="n">8.</span>Java classes &amp; relations</h2>
+<div class="diagram">
+<svg viewBox="0 0 980 430" role="img" aria-label="Class diagram">
+  <defs><marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrowhead"/></marker></defs>
+  <!-- column x: 20 / 340 / 660, width 280 -->
+  <!-- row 1 -->
+  <rect x="20" y="20" width="280" height="88" rx="6" class="box"/>
+  <text x="32" y="42" class="t-b">AppealController</text><text x="32" y="62" class="t-small">@Controller &#183; worklist(), prepare(), review(),</text>
+  <text x="32" y="78" class="t-small">approve(), reject(), health()</text><text x="32" y="94" class="t-small">error handlers: 400 / 404 / 409</text>
+  <rect x="340" y="20" width="280" height="88" rx="6" class="box"/>
+  <text x="352" y="42" class="t-b">AppealService</text><text x="352" y="62" class="t-small">@Service &#183; prepare() (synchronized)</text>
+  <text x="352" y="78" class="t-small">runWorkflow() on 4 background threads</text><text x="352" y="94" class="t-small">approve(), reject(), audit</text>
+  <rect x="660" y="20" width="280" height="88" rx="6" class="ai"/>
+  <text x="672" y="42" class="t-b">AppealWorkflow</text><text x="672" y="62" class="t-small">@Component &#183; run(claim, tools) &#8594; Outcome</text>
+  <text x="672" y="78" class="t-small">checkLoop(), finalCheck(), steps()</text><text x="672" y="94" class="t-small">records: Step, Outcome</text>
+  <!-- row 2 -->
+  <rect x="20" y="170" width="280" height="88" rx="6" class="alt"/>
+  <text x="32" y="192" class="t-b">DemoData</text><text x="32" y="212" class="t-small">@Component &#183; claims(), claim(id), patient()</text>
+  <text x="32" y="228" class="t-small">chart(), authorizations(), policy()</text><text x="32" y="244" class="t-small">records: Patient, DeniedClaim, ChartEntry, ...</text>
+  <rect x="340" y="170" width="280" height="88" rx="6" class="box"/>
+  <text x="352" y="192" class="t-b">Appeal</text><text x="352" y="212" class="t-small">work-queue item &#183; enum Status (7 values)</text>
+  <text x="352" y="228" class="t-small">record AuditEvent &#183; log(actor, action)</text><text x="352" y="244" class="t-small">volatile fields, thread-safe audit list</text>
+  <rect x="660" y="170" width="280" height="88" rx="6" class="ai"/>
+  <text x="672" y="192" class="t-b">AppealAgents</text><text x="672" y="212" class="t-small">6 @Agent interfaces + enum DenialCategory</text>
+  <text x="672" y="228" class="t-small">Classifier, EvidenceCollector, Writer,</text><text x="672" y="244" class="t-small">Checker, Reviser, CorrectedClaimAdvisor</text>
+  <!-- row 3 -->
+  <rect x="20" y="320" width="280" height="88" rx="6" class="box"/>
+  <text x="32" y="342" class="t-b">WebAppInitializer / WebConfig</text><text x="32" y="362" class="t-small">replaces web.xml &#183; DispatcherServlet</text>
+  <text x="32" y="378" class="t-small">UTF-8 filter, cookie-only sessions</text><text x="32" y="394" class="t-small">JSP view resolver, component scan</text>
+  <rect x="340" y="320" width="280" height="88" rx="6" class="ai"/>
+  <text x="352" y="342" class="t-b">ClaimTools</text><text x="352" y="362" class="t-small">new per claim &#183; 4 @Tool methods</text>
+  <text x="352" y="378" class="t-small">sourceRecords() (plain Java, not a tool)</text><text x="352" y="394" class="t-small">onCall &#8594; live audit log</text>
+  <rect x="660" y="320" width="280" height="88" rx="6" class="ai"/>
+  <text x="672" y="342" class="t-b">ClaudeModel</text><text x="672" y="362" class="t-small">@Component &#183; AnthropicChatModel</text>
+  <text x="672" y="378" class="t-small">claude-opus-5-5, adaptive thinking</text><text x="672" y="394" class="t-small">drop_block, fallbacks, 5-min timeout</text>
+  <!-- relations: solid = calls / uses -->
+  <path d="M300,64 L338,64" class="ln" marker-end="url(#a3)"/>
+  <path d="M620,64 L658,64" class="ln" marker-end="url(#a3)"/>
+  <path d="M160,108 L160,168" class="ln" marker-end="url(#a3)"/>
+  <path d="M480,108 L480,168" class="ln" marker-end="url(#a3)"/>
+  <path d="M800,108 L800,168" class="ln" marker-end="url(#a3)"/>
+  <path d="M940,64 L960,64 L960,364 L942,364" class="ln" marker-end="url(#a3)"/>
+  <!-- dashed = creates or reads data (routed through the gaps between boxes) -->
+  <path d="M380,108 L380,140 L230,140 L230,168" class="ln-d" marker-end="url(#a3)"/>
+  <path d="M620,96 L640,96 L640,364 L622,364" class="ln-d" marker-end="url(#a3)"/>
+  <path d="M340,340 L320,340 L320,214 L302,214" class="ln-d" marker-end="url(#a3)"/>
+  <text x="644" y="300" class="t-small">creates</text>
+  <text x="252" y="300" class="t-small">reads</text>
+</svg>
+<div class="cap">Solid arrow = calls / uses; dashed = creates or reads data. Blue boxes = AI-related classes.</div>
+</div>
+
+<!-- ===================================================================== -->
+<h2 id="agents"><span class="n">9.</span>AI agents &amp; prompts</h2>
+<p>Each agent is a Java interface; LangChain4j writes the implementation. <code>{{name}}</code> in a prompt is filled from the shared workflow state;
+the answer is stored under the agent's <i>output key</i>.</p>
+<table>
+  <tr><th>#</th><th>Agent</th><th>Reads</th><th>Writes</th><th>Tools</th><th>Job</th></tr>
+  <tr><td>1</td><td>DenialClassifier</td><td>denialCode, denialRemark</td><td>category</td><td>-</td><td>Returns MEDICAL_NECESSITY, MISSING_AUTHORIZATION, CODING_ERROR or OTHER.</td></tr>
+  <tr><td>2a</td><td>EvidenceCollector</td><td>claimSummary</td><td>evidence</td><td>all 4</td><td>Lists dated facts "[date] [source] fact" + the applicable policy.</td></tr>
+  <tr><td>3a</td><td>AppealWriter</td><td>claimSummary, evidence</td><td>letter</td><td>-</td><td>Writes the letter, or "NOT RECOMMENDED: reason + better next step".</td></tr>
+  <tr><td>2b</td><td>CorrectedClaimAdvisor</td><td>claimSummary</td><td>letter</td><td>all 4</td><td>"CORRECTED CLAIM:" what is wrong and the exact fix; never suggests higher-paying codes.</td></tr>
+  <tr><td>4</td><td>AppealChecker</td><td>sourceRecords, letter</td><td>issues</td><td>-</td><td>Lists unsupported statements, or exactly "NONE".</td></tr>
+  <tr><td>5</td><td>AppealReviser</td><td>sourceRecords, issues, letter</td><td>letter</td><td>-</td><td>Fixes the listed statements, keeps the draft type and its marker.</td></tr>
+</table>
+<p><b>Tools</b> (<code>ClaimTools</code>, all read-only, no parameters - the claim is fixed when the object is created):
+<code>getClaimDetails</code>, <code>getChartEntries</code>, <code>getInsurerPolicy</code>, <code>getAuthorizations</code>.</p>
+
+<!-- ===================================================================== -->
+<h2 id="screens"><span class="n">10.</span>Screens &amp; URLs</h2>
+<table>
+  <tr><th>Method &amp; URL</th><th>View / result</th><th>What it does</th></tr>
+  <tr><td><code>GET /</code></td><td>worklist.jsp</td><td>Work list: claim, patient, service, amount, denial, deadline (days left / "deadline passed"), status, action.</td></tr>
+  <tr><td><code>POST /claims/{id}/prepare</code></td><td>redirect &#8594; review</td><td>Starts AI preparation in the background (409 if already approved).</td></tr>
+  <tr><td><code>GET /appeals/{id}</code></td><td>appeal.jsp</td><td>Review screen; refreshes every 3 s while PREPARING; shows proof, AI steps, draft, warnings, audit log.</td></tr>
+  <tr><td><code>POST /appeals/{id}/approve</code></td><td>redirect</td><td>Parameter <code>finalText</code> (required). Logs "with / without edits".</td></tr>
+  <tr><td><code>POST /appeals/{id}/reject</code></td><td>redirect</td><td>Parameter <code>reason</code> (required).</td></tr>
+  <tr><td><code>GET /health</code></td><td>text "OK"</td><td>Used by the Docker health check.</td></tr>
+</table>
+
+<!-- ===================================================================== -->
+<h2 id="status"><span class="n">11.</span>Statuses &amp; audit log</h2>
+<div class="diagram">
+<svg viewBox="0 0 920 250" role="img" aria-label="Status diagram">
+  <defs><marker id="a4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrowhead"/></marker></defs>
+  <rect x="20" y="100" width="130" height="44" rx="22" class="ai"/><text x="85" y="127" text-anchor="middle" class="t-b">PREPARING</text>
+  <rect x="290" y="20" width="200" height="40" rx="8" class="box"/><text x="390" y="45" text-anchor="middle" class="t-b">READY_FOR_REVIEW</text>
+  <rect x="290" y="76" width="200" height="40" rx="8" class="box"/><text x="390" y="101" text-anchor="middle" class="t-b">NOT_RECOMMENDED</text>
+  <rect x="290" y="132" width="200" height="40" rx="8" class="box"/><text x="390" y="157" text-anchor="middle" class="t-b">CORRECTION_SUGGESTED</text>
+  <rect x="290" y="190" width="200" height="40" rx="8" class="ext"/><text x="390" y="215" text-anchor="middle" class="t-b">FAILED</text>
+  <rect x="640" y="50" width="250" height="40" rx="8" class="human"/><text x="765" y="75" text-anchor="middle" class="t-b">APPROVED (sent, simulated)</text>
+  <rect x="640" y="130" width="250" height="40" rx="8" class="ext"/><text x="765" y="155" text-anchor="middle" class="t-b">REJECTED</text>
+  <path d="M150,112 L288,40" class="ln" marker-end="url(#a4)"/>
+  <path d="M150,118 L288,96" class="ln" marker-end="url(#a4)"/>
+  <path d="M150,126 L288,152" class="ln" marker-end="url(#a4)"/>
+  <path d="M150,134 L288,208" class="ln" marker-end="url(#a4)"/>
+  <path d="M490,40 L638,66" class="ln" marker-end="url(#a4)"/><path d="M490,96 L638,72" class="ln" marker-end="url(#a4)"/><path d="M490,152 L638,78" class="ln" marker-end="url(#a4)"/>
+  <path d="M490,44 L638,144" class="ln-d" marker-end="url(#a4)"/><path d="M490,100 L638,148" class="ln-d" marker-end="url(#a4)"/><path d="M490,156 L638,152" class="ln-d" marker-end="url(#a4)"/>
+  <path d="M765,170 L765,242 L85,242 L85,146" class="ln-d" marker-end="url(#a4)"/><text x="560" y="237" class="t-small">Prepare again (audit history kept)</text>
+  <path d="M290,222 L110,222 L110,146" class="ln-d" marker-end="url(#a4)"/><text x="150" y="216" class="t-small">Try again</text>
+  <text x="520" y="28" class="t-small">Approve (solid) / Reject (dashed)</text>
+</svg>
+<div class="cap">The three middle statuses are "needs review". APPROVED is final - preparing it again is refused (409).</div>
+</div>
+<p><b>Audit log</b> entries (actor &middot; action): "biller.demo &middot; Requested AI preparation", "AI workflow &middot; Started", "AI workflow &middot; Read (tool): chart entries" (live, one per tool call),
+"AI workflow &middot; Finished: CATEGORY -&gt; status (N agent steps, all statements checked)", "biller.demo &middot; Approved with edits - sent to insurer (simulated)",
+"biller.demo &middot; Rejected: reason". The log only grows - it is copied forward when an appeal is prepared again.</p>
+
+<!-- ===================================================================== -->
+<h2 id="config"><span class="n">12.</span>Configuration</h2>
+<table>
+  <tr><th>Setting</th><th>Where</th><th>Value / meaning</th></tr>
+  <tr><td><code>ANTHROPIC_API_KEY</code></td><td>terminal &#8594; compose &#8594; container</td><td>Required for real Claude. Set per terminal with a hidden prompt; never stored in files.</td></tr>
+  <tr><td><code>ANTHROPIC_BASE_URL</code></td><td>terminal &#8594; compose</td><td>Empty = real Claude API. Only for testing with the fake server.</td></tr>
+  <tr><td>Model</td><td><code>ClaudeModel</code></td><td><code>claude-opus-5-5</code>, maxTokens 16000, timeout 5 min.</td></tr>
+  <tr><td>Thinking</td><td><code>ClaudeModel</code> (customParameters)</td><td><code>{"type":"adaptive","block_binding":{"prefix_mismatch_behavior":"drop_block"}}</code>; thinking blocks returned and sent back during tool calls.</td></tr>
+  <tr><td>Refusal fallback</td><td><code>ClaudeModel</code></td><td><code>fallbacks: "default"</code> + beta header <code>server-side-fallback-2026-07-01</code>.</td></tr>
+  <tr><td>Check rounds</td><td><code>AppealWorkflow.MAX_CHECK_ROUNDS</code></td><td>3</td></tr>
+  <tr><td>Background threads</td><td><code>AppealService</code></td><td>4</td></tr>
+  <tr><td>Port, memory, time zone</td><td><code>compose.yaml</code>, <code>Dockerfile</code></td><td>8090 &#8594; 8080; container limit 640 MB, Java heap max 384 MB; TZ Asia/Kolkata.</td></tr>
+  <tr><td>Health check</td><td><code>compose.yaml</code></td><td>bash <code>/dev/tcp</code> request to <code>/health</code> every 30 s.</td></tr>
+</table>
+
+<!-- ===================================================================== -->
+<h2 id="deps"><span class="n">13.</span>Dependencies</h2>
+<p>Runtime dependency tree (from <code>mvn dependency:tree</code>). The Servlet API is <code>provided</code> by Tomcat and not packed in the WAR.</p>
+<pre><code>com.pravin:appeal-assistant-demo:war:1.0-SNAPSHOT
++- org.springframework:spring-webmvc:7.0.9
+|  +- spring-aop, spring-beans, spring-context, spring-core, spring-expression, spring-web : 7.0.9
+|  +- io.micrometer:micrometer-observation / micrometer-commons : 1.16.7
+|  +- commons-logging:commons-logging:1.3.5
+|  \- org.jspecify:jspecify:1.0.0
++- jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.2   (EL API excluded - Tomcat has it)
++- org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1
++- dev.langchain4j:langchain4j:1.22.0
+|  +- langchain4j-core:1.22.0
+|  +- com.fasterxml.jackson.core: jackson-annotations 2.22, jackson-core 2.22.1, jackson-databind 2.22.1
+|  +- org.apache.opennlp:opennlp-tools:2.5.11
+|  +- org.slf4j:slf4j-api:2.0.18
+|  \- io.smallrye.reactive:mutiny-zero:1.3.1
++- dev.langchain4j:langchain4j-anthropic:1.22.0
+|  +- langchain4j-http-client, langchain4j-http-client-jdk : 1.22.0
+|  \- langchain4j-reactive-streaming:1.22.0-beta32
+\- dev.langchain4j:langchain4j-agentic:1.22.0-beta32
+provided: jakarta.servlet:jakarta.servlet-api:6.1.0</code></pre>
+<table>
+  <tr><th>Library group</th><th>Licence</th><th>Free for production</th></tr>
+  <tr><td>Spring Framework, Micrometer, commons-logging, Jackson, OpenNLP, LangChain4j, Mutiny Zero, JSpecify</td><td>Apache-2.0</td><td>Yes</td></tr>
+  <tr><td>Jakarta JSTL API / GlassFish JSTL, Jakarta Servlet API</td><td>EPL-2.0 (+ GPL-2.0 with Classpath Exception)</td><td>Yes</td></tr>
+  <tr><td>SLF4J API</td><td>MIT</td><td>Yes</td></tr>
+  <tr><td>Build plugins: maven-compiler-plugin 3.16.0, maven-war-plugin 3.5.1</td><td>Apache-2.0</td><td>Yes</td></tr>
+</table>
+<p>No logging back-end is bundled, so SLF4J prints a one-line "no providers" warning at start-up - harmless.</p>
+
+<!-- ===================================================================== -->
+<h2 id="deploy"><span class="n">14.</span>Build &amp; deployment</h2>
+<div class="ok"><b>Only Docker is needed</b> on the machine - no Java, no Maven. The multi-stage <code>Dockerfile</code> builds the WAR with Maven 3.10.0 / JDK 21 and copies it into Tomcat 11.0.27.</div>
+<h3>On any machine with Docker Desktop</h3>
+<pre><code>git clone https://github.com/SPM-Technologies/Agentic_AI_Workflows.git
+cd Agentic_AI_Workflows\appeal-assistant-demo
+# API key for this terminal only (hidden, not saved):
+$env:ANTHROPIC_API_KEY = [Net.NetworkCredential]::new('', (Read-Host 'API key' -AsSecureString)).Password
+docker compose up -d --build
+# open http://localhost:8090/</code></pre>
+<h3>Day to day</h3>
+<table>
+  <tr><th>Task</th><th>Command</th></tr>
+  <tr><td>Rebuild after a code change and restart</td><td><code>docker compose up -d --build</code></td></tr>
+  <tr><td>Follow the logs</td><td><code>docker compose logs -f</code></td></tr>
+  <tr><td>Container health</td><td><code>docker ps</code> (shows "healthy")</td></tr>
+  <tr><td>Check the image really was rebuilt</td><td><code>docker image inspect appeal-assistant-demo:latest --format '{{.Created}}'</code></td></tr>
+  <tr><td>Stop</td><td><code>docker compose down</code></td></tr>
+</table>
+<p>Maven's downloads are kept in a Docker build cache, so rebuilds after the first one are fast.
+A host build (<code>mvn package</code> with a local or Docker-based Maven) still works and produces <code>target/ROOT.war</code>, but is no longer needed.</p>
+
+<!-- ===================================================================== -->
+<h2 id="testing"><span class="n">15.</span>Testing</h2>
+<h3>15.1 Free tests with the fake Claude server (no API credit)</h3>
+<p><code>testing/FakeClaudeAppeal.java</code> imitates the Claude API: it classifies the denial codes, asks for the tools, plants one unsupported sentence
+("neurosurgeon") so the checker loop can prove itself, and for C-1004 never fixes it - to exercise "rounds used up &#8594; final check &#8594; warning".</p>
+<pre><code>$env:ANTHROPIC_API_KEY = "test-key"
+$env:ANTHROPIC_BASE_URL = "http://fake-claude:18095/v1/"
+docker compose --profile fake up -d --build
+# ... test at http://localhost:8090/ ...
+docker compose --profile fake down
+Remove-Item Env:ANTHROPIC_BASE_URL   # back to the real API ...
+# ... and set the real key again (the terminal still holds "test-key"):
+$env:ANTHROPIC_API_KEY = [Net.NetworkCredential]::new('', (Read-Host 'API key' -AsSecureString)).Password</code></pre>
+<p>Every request the app sends is written to <code>testing/appeal-requests.log</code> (git-ignored) for inspection.</p>
+<h3>15.2 What has been tested (fake server)</h3>
+<table>
+  <tr><th>Test</th><th>Result</th></tr>
+  <tr><td>All 4 paths (appeal, not recommended, corrected claim, appeal with stubborn reviser)</td><td>Passed - 6, 4, 3 and 10 agent steps; warning shown for C-1004</td></tr>
+  <tr><td>Checker always receives the source records</td><td>Passed - the fake server rejects any check without them; no rejections</td></tr>
+  <tr><td>Double-click starts only one run</td><td>Passed</td></tr>
+  <tr><td>Live tool reads in the audit log while PREPARING</td><td>Passed</td></tr>
+  <tr><td>Approve with edits; approve twice (409); empty text / reason (400); unknown claim (404)</td><td>Passed</td></tr>
+  <tr><td>Re-prepare after reject keeps the audit history; approved claim cannot be re-prepared</td><td>Passed</td></tr>
+  <tr><td>No API key: clear message, app still runs</td><td>Passed</td></tr>
+  <tr><td>Requests to Claude: exactly one thinking setting, no <code>temperature</code></td><td>Passed</td></tr>
+  <tr><td>Docker image: builds without local Maven; health check; time zone IST</td><td>Passed</td></tr>
+  <tr><td><code>docker compose --profile fake up -d --build</code> end to end (C-1003 &#8594; corrected claim)</td><td>Passed - container reports "healthy"</td></tr>
+</table>
+<h3>15.3 Manual test with real Claude</h3>
+<table>
+  <tr><th>#</th><th>Do</th><th>Expect</th></tr>
+  <tr><td>1</td><td>Open the work list</td><td>4 claims, status "New"</td></tr>
+  <tr><td>2</td><td>C-1001 &#8594; Prepare with AI</td><td>Live audit; after 1-2 min "Ready for review", MEDICAL_NECESSITY, letter citing dated proof</td></tr>
+  <tr><td>3</td><td>C-1002 &#8594; Prepare</td><td>"Not recommended" - request a new authorization</td></tr>
+  <tr><td>4</td><td>C-1003 &#8594; Prepare</td><td>"Corrected claim" - add modifier 25 to 99213</td></tr>
+  <tr><td>5</td><td>C-1004 &#8594; Prepare, edit, Approve</td><td>"Approved - sent (simulated)", audit "with edits"</td></tr>
+  <tr><td>6</td><td>C-1002 &#8594; Reject with reason, Prepare again</td><td>Audit keeps both runs and the rejection</td></tr>
+</table>
+<p>Wording differs between runs - the <b>path</b> per claim should match.</p>
+
+<!-- ===================================================================== -->
+<h2 id="security"><span class="n">16.</span>Security, guardrails &amp; known limitations</h2>
+<h3>Guardrails built in</h3>
+<ul>
+  <li><b>Human approval</b> - nothing is "sent" without a biller's Approve; the biller can edit first.</li>
+  <li><b>Minimum necessary data</b> - tools are bound to one claim's patient and take no patient id from the AI.</li>
+  <li><b>Checked against the system's own data</b> - every draft is verified against source records read by code.</li>
+  <li><b>Coding compliance</b> - the corrected-claim agent is told never to suggest higher-paying codes.</li>
+  <li><b>Full audit trail</b> - AI steps, every tool read (live) and every human decision; never wiped.</li>
+  <li><b>Output escaping</b> - all AI and user text goes through <code>&lt;c:out&gt;</code>.</li>
+  <li><b>API key</b> - only in the terminal session and the container environment; never in files or images.</li>
+  <li><b>Cookie-only sessions</b> - no session id in URLs.</li>
+</ul>
+<h3>Deliberate demo limitations</h3>
+<table>
+  <tr><th>Limitation</th><th>In a real product</th></tr>
+  <tr><td>Data in memory, lost on restart</td><td>Existing SQL Server tables (section 6 model)</td></tr>
+  <tr><td>No login; single user <code>biller.demo</code></td><td>Spring Security, user from the session, role checks</td></tr>
+  <tr><td>No CSRF protection on forms</td><td>Spring Security CSRF tokens</td></tr>
+  <tr><td>Sending is simulated</td><td>Existing claim / appeal submission service</td></tr>
+  <tr><td>Synthetic data only</td><td>Real patient data only after a signed BAA with the AI vendor</td></tr>
+  <tr><td>Text inside chart notes is passed to the AI as data</td><td>Add prompt-injection screening of document text</td></tr>
+</table>
+
+<!-- ===================================================================== -->
+<h2 id="cost"><span class="n">17.</span>Cost</h2>
+<p>Claude Opus 5.5 list price: $4 per million input tokens, $20 per million output tokens (October 2026).
+A claim uses 4-11 Claude calls: each step is one call, each tool round trip is one more, and every check / revise round adds two. Estimate: <b>a few cents to about $0.50 per claim</b>.
+Each click on "Prepare with AI" spends money - the double-click guard prevents accidental duplicates. Testing with the fake server is free.</p>
+
+<!-- ===================================================================== -->
+<h2 id="trouble"><span class="n">18.</span>Troubleshooting</h2>
+<table>
+  <tr><th>Symptom</th><th>Cause / fix</th></tr>
+  <tr><td>"ANTHROPIC_API_KEY is not set"</td><td>Key not set in the terminal that ran compose. Set it, then <code>docker compose up -d --build</code>.</td></tr>
+  <tr><td>"Error calling Claude: ... 401"</td><td>Wrong key.</td></tr>
+  <tr><td>Error mentioning credit / billing</td><td>Add credit in the Anthropic Console.</td></tr>
+  <tr><td>Page stays "Preparing..." for several minutes</td><td>Normal for slow calls (timeout 5 min per call). Check <code>docker compose logs -f</code>; the item ends as FAILED with a message if a call fails.</td></tr>
+  <tr><td>Old behaviour after a code change</td><td>Use <code>--build</code>; confirm with <code>docker image inspect ... {{.Created}}</code>.</td></tr>
+  <tr><td>Port 8090 already in use</td><td>Another container uses it - <code>docker ps</code>, stop it, or change the port in <code>compose.yaml</code>.</td></tr>
+  <tr><td>"container name already in use"</td><td>An older container with the same name exists: <code>docker rm -f appeal-demo-tomcat</code>, then start again.</td></tr>
+  <tr><td>Real Claude calls go to the fake server</td><td><code>ANTHROPIC_BASE_URL</code> is still set: <code>Remove-Item Env:ANTHROPIC_BASE_URL</code>, then restart with compose.</td></tr>
+</table>
+
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,8 @@
+# keep the build context small: only pom.xml and src/ are needed
+target/
+deploy/
+docs/
+testing/
+*.md
+*.sh
+.env

@@ -90,10 +90,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.5.1</version>
-                <configuration>
-                    <!-- put the war in ./deploy, which Tomcat (Docker) watches -->
-                    <outputDirectory>${project.basedir}/deploy</outputDirectory>
-                </configuration>
             </plugin>
         </plugins>
     </build>
